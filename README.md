@@ -7,6 +7,12 @@ Todo este trabalho foi baseado no conteúdo do [Projeto Base](https://www.inf.uf
 
 Abaixo encontram-se as instruções de uso básicas deste repositório, modificadas do arquivo `USAGE` presente no Projeto Base fornecido pelo prof. Bruno.
 
+> **IMPORTANTE:** Para sistemas basedos em Ubuntu, os executáveis para o `flex` e o `bison` já estão instalados, mas não as bibliotecas necessárias para que o `gcc` compile o executável final. Para instalar as bibliotecas, rode os seguintes comandos:
+> ```bash
+> sudo apt update && sudo apt upgrade
+> sudo apt install -y libfl-dev libbison-dev
+> ``` 
+
 ## Conteúdo do arquivo `USAGE`
 1. Só para gerar código MEPA:
 ```bash
