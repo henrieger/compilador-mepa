@@ -17,64 +17,94 @@ int num_vars;
 %token PROGRAM ABRE_PARENTESES FECHA_PARENTESES
 %token VIRGULA PONTO_E_VIRGULA DOIS_PONTOS PONTO
 %token T_BEGIN T_END VAR IDENT ATRIBUICAO
+%token LABEL TYPE ARRAY PROCEDURE FUNCTION
+%token ABRE_COLCHETES FECHA_COLCHETES OF PONTO_PONTO
+%token GOTO IF THEN ELSE
+%token WHILE DO
+%token IGUAL DIF MAIOR MAIOR_IGUAL MENOR MENOR_IGUAL
+%token MAIS MENOS OR
+%token VEZES DIV AND
+%token NOT
+%token NUMERO
 
 %%
 
-programa    :{
-             geraCodigo (NULL, "INPP");
-             }
-             PROGRAM IDENT
-             ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
-             bloco PONTO {
-             geraCodigo (NULL, "PARA");
-             }
+programa:
+    {
+        geraCodigo (NULL, "INPP");
+    }
+    PROGRAM IDENT
+    ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
+    bloco PONTO
+    {
+        geraCodigo (NULL, "PARA");
+    }
 ;
 
-bloco       :
-              parte_declara_vars
-              {
-              }
+bloco:
+    parte_declara_vars
+    {
+    }
 
-              comando_composto
-              ;
-
-
-
-
-parte_declara_vars:  var
+    comando_composto
 ;
 
 
-var         : { } VAR declara_vars
-            |
-;
 
-declara_vars: declara_vars declara_var
-            | declara_var
-;
 
-declara_var : { }
-              lista_id_var DOIS_PONTOS
-              tipo
-              { /* AMEM */
-              }
-              PONTO_E_VIRGULA
-;
-
-tipo        : IDENT
-;
-
-lista_id_var: lista_id_var VIRGULA IDENT
-              { /* insere �ltima vars na tabela de s�mbolos */ }
-            | IDENT { /* insere vars na tabela de s�mbolos */}
-;
-
-lista_idents: lista_idents VIRGULA IDENT
-            | IDENT
+parte_declara_vars:
+     var
 ;
 
 
-comando_composto: T_BEGIN comandos T_END
+var:
+    {
+
+    }
+    VAR declara_vars
+    |
+;
+
+declara_vars:
+    declara_vars declara_var
+    | declara_var
+;
+
+declara_var :
+    {
+
+    }
+    lista_id_var DOIS_PONTOS
+    tipo
+    {
+        /* AMEM */
+    }
+    PONTO_E_VIRGULA
+;
+
+tipo:
+    IDENT
+;
+
+lista_id_var:
+    lista_id_var VIRGULA IDENT
+    {
+        /* insere �ltima vars na tabela de s�mbolos */
+    }
+    | IDENT
+    {
+        /* insere vars na tabela de s�mbolos */
+    }
+;
+
+lista_idents:
+    lista_idents VIRGULA IDENT
+    | IDENT
+;
+
+
+comando_composto:
+    T_BEGIN comandos T_END
 
 comandos:
 ;

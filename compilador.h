@@ -3,7 +3,8 @@
  * -------------------------------------------------------------------
  *              Autor: Bruno Muller Junior
  *               Data: 08/2007
- *      Atualizado em: [09/08/2020, 19h:01m]
+ *     Modificado por: Henrique Luiz Rieger
+ *      Atualizado em: [12/08/2023, 16h:23m]
  *
  * -------------------------------------------------------------------
  *
@@ -18,6 +19,14 @@ typedef enum simbolos {
   simb_identificador, simb_numero,
   simb_ponto, simb_virgula, simb_ponto_e_virgula, simb_dois_pontos,
   simb_atribuicao, simb_abre_parenteses, simb_fecha_parenteses,
+  simb_label, simb_type, simb_array, simb_procedure, simb_function,
+  simb_abre_colchetes, simb_fecha_colchetes, simb_of, simb_ponto_ponto,
+  simb_goto, simb_if, simb_then, simb_else,
+  simb_while, simb_do,
+  simb_igual, simb_dif, simb_maior, simb_maior_igual, simb_menor, simb_menor_igual,
+  simb_mais, simb_menos, simb_or,
+  simb_vezes, simb_div, simb_and,
+  simb_not,
 } simbolos;
 
 

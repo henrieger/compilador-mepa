@@ -1,4 +1,7 @@
 *.o
 *.output
+*.tab.[c|h]
+lex.yy.c
+compilador
+lex
 MEPA
-USAGE
