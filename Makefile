@@ -4,13 +4,18 @@
  #              Autor: Bruno Müller Junior
  #               Data: 08/2007
  #     Modificado por: Henrique Luiz Rieger
- #      Atualizado em: [12/08/2023, 16h:21m]
+ #      Atualizado em: [19/08/2023, 18h:37m]
  #
  # -------------------------------------------------------------------
 
 $DEPURA=1
 
-compilador: lex.yy.c compilador.tab.c compilador.o compilador.h
+all: compilador
+
+testa-pilha: pilha.o
+pilha.o: pilha.c pilha.h
+
+compilador: lex.yy.c compilador.tab.c compilador.o compilador.h pilha.o
 	gcc lex.yy.c compilador.tab.c compilador.o -o compilador -ll -ly -lc
 
 lex: lex.yy.c compilador.tab.c compilador.o
