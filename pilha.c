@@ -17,13 +17,13 @@ pilha_t *inicializaPilha()
 }
 
 // Retorna o tamanho da pilha
-size_t tamPilha(pilha_t *p)
+inline size_t tamPilha(pilha_t *p)
 {
   return p->topo;
 }
 
 // Checa se a pilha está vazia
-char pilhaVazia(pilha_t *p)
+inline char pilhaVazia(pilha_t *p)
 {
   return (p->tam == 0) || (p->topo == 0);
 }
@@ -89,73 +89,73 @@ int destroiPilha(pilha_t *p)
 // ---- FUNCOES EXTRAS ---- //
 
 // Tamanho de uma pilha de char
-size_t tamPilhaChar(pilha_t *p)
+inline size_t tamPilhaChar(pilha_t *p)
 {
   return tamPilha(p) / sizeof(char);
 }
 
 // Tamanho de uma pilha de short
-size_t tamPilhaShort(pilha_t *p)
+inline size_t tamPilhaShort(pilha_t *p)
 {
   return tamPilha(p) / sizeof(short);
 }
 
 // Tamanho de uma pilha de inteiros
-size_t tamPilhaInt(pilha_t *p)
+inline size_t tamPilhaInt(pilha_t *p)
 {
   return tamPilha(p) / sizeof(int);
 }
 
 // Tamanho de uma pilha de long
-size_t tamPilhaLong(pilha_t *p)
+inline size_t tamPilhaLong(pilha_t *p)
 {
   return tamPilha(p) / sizeof(long);
 }
 
 // Adiciona um char à pilha
-int pushChar(pilha_t *p, char e)
+inline int pushChar(pilha_t *p, char e)
 {
   return push(p, &e, sizeof(char));
 }
 
 // Adiciona short à pilha
-int pushShort(pilha_t *p, short e)
+inline int pushShort(pilha_t *p, short e)
 {
   return push(p, &e, sizeof(short));
 }
 
 // Adiciona inteiro à pilha
-int pushInt(pilha_t *p, int e)
+inline int pushInt(pilha_t *p, int e)
 {
   return push(p, &e, sizeof(int));
 }
 
 // Adiciona long à pilha
-int pushLong(pilha_t *p, long e)
+inline int pushLong(pilha_t *p, long e)
 {
   return push(p, &e, sizeof(long));
 }
 
 // Pega o char no topo da pilha
-char topChar(pilha_t *p)
+inline char topChar(pilha_t *p)
 {
   return *((char *) top(p, sizeof(char)));
 }
 
 // Pega o short no topo da pilha
-short topShort(pilha_t *p)
+inline short topShort(pilha_t *p)
 {
   return *((short *) top(p, sizeof(short)));
 }
 
 // Pega o inteiro no topo da pilha
-int topInt(pilha_t *p)
+inline int topInt(pilha_t *p)
 {
   return *((int *) top(p, sizeof(int)));
 }
 
 // Pega o long no topo da pilha
-long topLong(pilha_t *p)
+inline long topLong(pilha_t *p)
 {
   return *((long *) top(p, sizeof(long)));
 }
