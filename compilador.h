@@ -4,13 +4,16 @@
  *              Autor: Bruno Muller Junior
  *               Data: 08/2007
  *     Modificado por: Henrique Luiz Rieger
- *      Atualizado em: [12/08/2023, 16h:23m]
+ *      Atualizado em: [20/08/2023, 14h:38m]
  *
  * -------------------------------------------------------------------
  *
  * Tipos, protótipos e variáveis globais do compilador (via extern)
  *
  * ------------------------------------------------------------------- */
+
+# ifndef __COMPILADOR_H__
+# define __COMPILADOR_H__
 
 #define TAM_TOKEN 16
 
@@ -49,3 +52,5 @@ extern int nl;
 void geraCodigo (char*, char*);
 int yylex();
 void yyerror(const char *s);
+
+# endif

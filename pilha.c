@@ -57,12 +57,13 @@ void *top(pilha_t *p, size_t tam)
 int pop(pilha_t *p, void *ret, size_t tam)
 {
   if (tam <= 0) return 1;
-  if (!ret) return 2;
 
   void *t = top(p, tam);
-  if (!t) return 3;
+  if (!t) return 2;
   
-  memcpy(ret, t, tam);
+  if (ret)
+    memcpy(ret, t, tam);
+  
   p->topo -= tam;
 
   size_t novoTam = p->tam / 2;
