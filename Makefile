@@ -4,7 +4,7 @@
  #              Autor: Bruno Müller Junior
  #               Data: 08/2007
  #     Modificado por: Henrique Luiz Rieger
- #      Atualizado em: [20/08/2023, 14h:39m]
+ #      Atualizado em: [05/09/2023, 14h:05m]
  #
  # -------------------------------------------------------------------
 
@@ -20,8 +20,9 @@ testa-pilha: pilha.o
 pilha.o: pilha.c pilha.h
 
 testa-tabela-simbolos: CFLAGS += -g -DDEBUG
-testa-tabela-simbolos: testa-tabela-simbolos.c tabelaSimbolos.o pilha.o
+testa-tabela-simbolos: testa-tabela-simbolos.c tabelaSimbolos.o pilha.o tipoDado.o
 tabelaSimbolos.o: tabelaSimbolos.c tabelaSimbolos.h
+tipoDado.o: tipoDado.c tipoDado.h
 
 compilador: lex.yy.c compilador.tab.c compilador.o compilador.h pilha.o
 	gcc lex.yy.c compilador.tab.c compilador.o -o compilador -ll -ly -lc

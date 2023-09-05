@@ -12,32 +12,26 @@ enum simbCat
   PARAM_FORMAL,
   PROCEDIMENTO,
   FUNCAO,
-  ROTULO
-};
-
-enum tipos
-{
-  CHAR,
-  INTEGER,
-  REAL
+  ROTULO,
+  TIPO_DADO
 };
 
 struct varSimplesAttr
 {
-  enum tipos tipo;
+  void *tipo;
   unsigned int desloc;
 };
 
 struct paramFormalAttr
 {
-  enum tipos tipo;
+  void *tipo;
   unsigned int desloc;
   char porRef;
 };
 
 typedef struct listaParam
 {
-  enum tipos tipo;
+  void *tipo;
   char porRef;
 } listaParam_t;
 
@@ -51,7 +45,7 @@ struct procedimentoAttr
 struct funcaoAttr
 {
   char rotulo[16];
-  enum tipos tipoRetorno;
+  void *tipoRetorno;
   unsigned int numParam;
   listaParam_t *parametros;
 };
@@ -59,6 +53,11 @@ struct funcaoAttr
 struct rotuloAttr
 {
   unsigned int linhaCodigo;
+};
+
+struct tipoDadoAttr
+{
+  unsigned int tam;
 };
 
 typedef struct attrsSimbolo
@@ -72,6 +71,7 @@ typedef struct attrsSimbolo
     struct procedimentoAttr procAttr;
     struct funcaoAttr funAttr;
     struct rotuloAttr rotAttr;
+    struct tipoDadoAttr tdAttr;
   };
 } attrsSimbolo_t;
 
@@ -88,22 +88,25 @@ attrsSimbolo_t *inicializaAttrsSimbolo(enum simbCat cat, char nivel);
 listaParam_t *inicializaListaParam(int tam);
 
 // Retorna um parametro de função/procedimento
-listaParam_t param(enum tipos tipo, char porRef);
+listaParam_t param(void *tipo, char porRef);
 
 // Retorna struct com atributos de variavel simples
-struct varSimplesAttr varSimples(enum tipos tipo, unsigned int desloc);
+struct varSimplesAttr varSimples(void *tipo, unsigned int desloc);
 
 // Retorna struct com atributos de parametro formal
-struct paramFormalAttr paramFormal(enum tipos tipo, unsigned int desloc, char porRef);
+struct paramFormalAttr paramFormal(void *tipo, unsigned int desloc, char porRef);
 
 // Retorna struct com atributos de procedimento
 struct procedimentoAttr procedimento(char *rotulo, unsigned int numParam, listaParam_t *parametros);
 
 // Retorna struct com atributos de procedimento
-struct funcaoAttr funcao(enum tipos tipo, char *rotulo, unsigned int numParam, listaParam_t *parametros);
+struct funcaoAttr funcao(void *tipo, char *rotulo, unsigned int numParam, listaParam_t *parametros);
 
 // Retorna struct com atributos de rótulo
 struct rotuloAttr rotulo(unsigned int linhaCodigo);
+
+// Retorna struct com atributos de tipo de dados
+struct tipoDadoAttr _tipoDado(unsigned int tam);
 
 // Insere um simbolo na tabela de simbolos
 int insereSimbolo(tabelaSimbolos ts, char *ident, attrsSimbolo_t *as);

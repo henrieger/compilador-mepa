@@ -113,6 +113,12 @@ inline size_t tamPilhaLong(pilha_t *p)
   return tamPilha(p) / sizeof(long);
 }
 
+// Tamanho de uma pilha de ponteiros
+inline size_t tamPilhaPointer(pilha_t *p)
+{
+  return tamPilha(p) / sizeof(void *);
+}
+
 // Adiciona um char à pilha
 inline int pushChar(pilha_t *p, char e)
 {
@@ -137,6 +143,12 @@ inline int pushLong(pilha_t *p, long e)
   return push(p, &e, sizeof(long));
 }
 
+// Adiciona um ponteiro à pilha
+inline int pushPointer(pilha_t *p, void *e)
+{
+  return push(p, &e, sizeof(void *));
+}
+
 // Pega o char no topo da pilha
 inline char topChar(pilha_t *p)
 {
@@ -159,6 +171,12 @@ inline int topInt(pilha_t *p)
 inline long topLong(pilha_t *p)
 {
   return *((long *) top(p, sizeof(long)));
+}
+
+// Pega o ponteiro no topo da pilha
+inline void *topPointer(pilha_t *p)
+{
+  return *((void **) top(p, sizeof(void *)));
 }
 
 // Remove um char do topo da pilha
@@ -190,5 +208,13 @@ long popLong(pilha_t *p)
 {
   long ret;
   if (pop(p, &ret, sizeof(long))) return 0;
+  return ret;
+}
+
+// Remove um ponteiro do topo da pilha
+void *popPointer(pilha_t *p)
+{
+  void *ret;
+  if (pop(p, &ret, sizeof(void *))) return 0;
   return ret;
 }

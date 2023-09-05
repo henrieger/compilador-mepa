@@ -4,6 +4,7 @@
 # include "compilador.h"
 # include "pilha.h"
 # include "tabelaSimbolos.h"
+# include "tipoDado.h"
 
 void printSimbolo(char *ident, attrsSimbolo_t* as)
 {
@@ -11,25 +12,28 @@ void printSimbolo(char *ident, attrsSimbolo_t* as)
   switch (as->cat)
   {
     case VAR_SIMPLES:
-      printf("\tDeslocamento: %d\n\tTipo: %d\n", as->vsAttr.desloc, as->vsAttr.tipo);
+      printf("\tDeslocamento: %d\n\tTipo: %p\n", as->vsAttr.desloc, as->vsAttr.tipo);
       break;
     case PARAM_FORMAL:
-      printf("\tDeslocamento: %d\n\tTipo: %d\n\tPor referência: %d\n", as->pfAttr.desloc, as->pfAttr.tipo, as->pfAttr.porRef);
+      printf("\tDeslocamento: %d\n\tTipo: %p\n\tPor referência: %d\n", as->pfAttr.desloc, as->pfAttr.tipo, as->pfAttr.porRef);
       break;
     case PROCEDIMENTO:
       printf("\tRótulo: %s\n\tNúmero de parâmetros: %d\n\tParâmetros:\n\t{\n", as->procAttr.rotulo, as->procAttr.numParam);
       for (int i = 0; i < as->procAttr.numParam; i++)
-        printf("\t\tTipo: %d\n\t\tPor referência: %d\n", as->procAttr.parametros[i].tipo, as->procAttr.parametros[i].porRef);
+        printf("\t\tTipo: %p\n\t\tPor referência: %d\n", as->procAttr.parametros[i].tipo, as->procAttr.parametros[i].porRef);
       printf("\t}\n");
       break;
     case FUNCAO:
-      printf("\tTipo do retorno: %d\n\tRótulo: %s\n\tNúmero de parâmetros: %d\n\tParâmetros:\n\t{\n", as->funAttr.tipoRetorno, as->funAttr.rotulo, as->funAttr.numParam);
+      printf("\tTipo do retorno: %p\n\tRótulo: %s\n\tNúmero de parâmetros: %d\n\tParâmetros:\n\t{\n", as->funAttr.tipoRetorno, as->funAttr.rotulo, as->funAttr.numParam);
       for (int i = 0; i < as->funAttr.numParam; i++)
-        printf("\t\tTipo: %d\n\t\tPor referência: %d\n", as->funAttr.parametros[i].tipo, as->funAttr.parametros[i].porRef);
+        printf("\t\tTipo: %p\n\t\tPor referência: %d\n", as->funAttr.parametros[i].tipo, as->funAttr.parametros[i].porRef);
       printf("\t}\n");
       break;
     case ROTULO:
       printf("\tLinha de código: %d\n", as->rotAttr.linhaCodigo);
+      break;
+    case TIPO_DADO:
+      printf("\tTamanho: %d\n", as->tdAttr.tam);
       break;
   }
   printf("}\n");
@@ -50,6 +54,19 @@ int main()
   tabelaSimbolos ts = inicializaPilha();
 
   printTabelaSimbolos(ts);
+
+  insereTipoDado(ts, "integer", 4, 0);
+  insereTipoDado(ts, "real", 4, 0);
+  insereTipoDado(ts, "boolean", 1, 0);
+
+  tipoDado INTEGER = buscaTipoDado(ts, "integer");
+  tipoDado REAL = buscaTipoDado(ts, "real");
+  tipoDado BOOLEAN = buscaTipoDado(ts, "boolean");
+
+  printTabelaSimbolos(ts);
+  printf("\nTipo INTEGER: %p\n", INTEGER);
+  printf("Tipo REAL: %p\n", REAL);
+  printf("Tipo BOOLEAN: %p\n", BOOLEAN);
 
   // var teste: integer;
   attrsSimbolo_t *teste_as = inicializaAttrsSimbolo(VAR_SIMPLES, 0);
@@ -101,6 +118,12 @@ int main()
   // Remove var da tabela
   retiraSimbolos(ts, 1);
   
+  printf("\n");
+  printTabelaSimbolos(ts);
+
+  // Remove tipos basicos de dados da tabela
+  retiraSimbolos(ts, 3);
+
   printf("\n");
   printTabelaSimbolos(ts);
 

@@ -45,6 +45,9 @@ size_t tamPilhaInt(pilha_t *p);
 // Tamanho de uma pilha de long
 size_t tamPilhaLong(pilha_t *p);
 
+// Tamanho de uma pilha de ponteiros
+size_t tamPilhaPointer(pilha_t *p);
+
 // Adiciona um char à pilha
 int pushChar(pilha_t *p, char e);
 
@@ -56,6 +59,9 @@ int pushInt(pilha_t *p, int e);
 
 // Adiciona long à pilha
 int pushLong(pilha_t *p, long e);
+
+// Adiciona um ponteiro à pilha
+int pushPointer(pilha_t *p, void *e);
 
 // Pega o char no topo da pilha
 char topChar(pilha_t *p);
@@ -69,6 +75,9 @@ int topInt(pilha_t *p);
 // Pega o long no topo da pilha
 long topLong(pilha_t *p);
 
+// Pega o ponteiro no topo da pilha
+void *topPointer(pilha_t *p);
+
 // Remove um char do topo da pilha
 char popChar(pilha_t *p);
 
@@ -80,5 +89,8 @@ int popInt(pilha_t *p);
 
 // Remove um long do topo da pilha
 long popLong(pilha_t *p);
+
+// Remove um ponteiro do topo da pilha
+void *popPointer(pilha_t *p);
 
 # endif

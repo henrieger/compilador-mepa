@@ -25,7 +25,7 @@ listaParam_t *inicializaListaParam(int tam)
 }
 
 // Retorna um parametro de função/procedimento
-listaParam_t param(enum tipos tipo, char porRef)
+listaParam_t param(void *tipo, char porRef)
 {
   listaParam_t p;
   p.tipo = tipo;
@@ -35,7 +35,7 @@ listaParam_t param(enum tipos tipo, char porRef)
 }
 
 // Retorna struct com atributos de variavel simples
-struct varSimplesAttr varSimples(enum tipos tipo, unsigned int desloc)
+struct varSimplesAttr varSimples(void *tipo, unsigned int desloc)
 {
   struct varSimplesAttr vs;
   vs.tipo = tipo;
@@ -45,7 +45,7 @@ struct varSimplesAttr varSimples(enum tipos tipo, unsigned int desloc)
 }
 
 // Retorna struct com atributos de parametro formal
-struct paramFormalAttr paramFormal(enum tipos tipo, unsigned int desloc, char porRef)
+struct paramFormalAttr paramFormal(void *tipo, unsigned int desloc, char porRef)
 {
   struct paramFormalAttr pf;
   pf.tipo = tipo;
@@ -67,7 +67,7 @@ struct procedimentoAttr procedimento(char *rotulo, unsigned int numParam, listaP
 }
 
 // Retorna struct com atributos de procedimento
-struct funcaoAttr funcao(enum tipos tipo, char *rotulo, unsigned int numParam, listaParam_t *parametros)
+struct funcaoAttr funcao(void *tipo, char *rotulo, unsigned int numParam, listaParam_t *parametros)
 {
   struct funcaoAttr f;
   f.tipoRetorno = tipo;
@@ -100,10 +100,19 @@ int insereSimbolo(tabelaSimbolos ts, char *ident, attrsSimbolo_t *as)
   return 0;
 }
 
+// Retorna struct com atributos de tipo de dados
+struct tipoDadoAttr _tipoDado(unsigned int tam)
+{
+  struct tipoDadoAttr td;
+  td.tam = tam;
+
+  return td;
+}
+
 // Busca atributos de um simbolo
 attrsSimbolo_t *buscaSimbolo(tabelaSimbolos ts, char *ident)
 {
-  for (int i = tamPilha(ts) - sizeof(simbolo_t); i > 0; i -= sizeof(simbolo_t))
+  for (int i = tamPilha(ts) - sizeof(simbolo_t); i >= 0; i -= sizeof(simbolo_t))
   {
     simbolo_t *s = (simbolo_t *) (ts->mem + i);
     int cmp = strncmp(ident, s->ident, TAM_TOKEN);
