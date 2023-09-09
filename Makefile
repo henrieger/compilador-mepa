@@ -4,7 +4,7 @@
  #              Autor: Bruno Müller Junior
  #               Data: 08/2007
  #     Modificado por: Henrique Luiz Rieger
- #      Atualizado em: [08/09/2023, 23h:59m]
+ #      Atualizado em: [09/09/2023, 14h:08m]
  #
  # -------------------------------------------------------------------
 
@@ -21,9 +21,10 @@ testa-tabela-simbolos: CFLAGS += -g -DDEBUG
 testa-tabela-simbolos: testa-tabela-simbolos.c tabelaSimbolos.o pilha.o tipoDado.o
 tabelaSimbolos.o: tabelaSimbolos.c tabelaSimbolos.h
 tipoDado.o: tipoDado.c tipoDado.h
+rotulos.o: rotulos.c rotulos.h
 
-compilador: lex.yy.c compilador.tab.c compilador.o compilador.h pilha.o tabelaSimbolos.o tipoDado.o
-	${CC} ${CFLAGS} lex.yy.c compilador.tab.c compilador.o pilha.o tabelaSimbolos.o tipoDado.o -o compilador -ll -ly -lc
+compilador: lex.yy.c compilador.tab.c compilador.o compilador.h pilha.o tabelaSimbolos.o tipoDado.o rotulos.o
+	${CC} ${CFLAGS} lex.yy.c compilador.tab.c compilador.o pilha.o tabelaSimbolos.o tipoDado.o rotulos.o -o compilador -ll -ly -lc
 
 lex: lex.yy.c compilador.tab.c compilador.o
 	${CC} lex.yy.c -DLEXMAIN compilador.o -o lex -ll

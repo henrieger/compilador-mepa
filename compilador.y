@@ -12,6 +12,7 @@
 #include "pilha.h"
 #include "tabelaSimbolos.h"
 #include "tipoDado.h"
+#include "rotulos.h"
 
 # define TAM_OP 5
 
@@ -23,6 +24,7 @@ int desloc = 0;
 // Pilhas
 tabelaSimbolos tabSim;
 pilhaTipos pilhaTipo;
+pilhaRotulos_t pilhaRotulos;
 pilha_t *pilhaAttrs;
 pilha_t *pilhaOperacoes;
 
@@ -39,6 +41,8 @@ tipoDado BOOLEAN;
 // Variáveis auxiliares
 char comando[256]; // contem comandos para impressao
 char erro[256]; // contem msgs de erro
+rotulo_t rotuloPre; // "R00"
+rotulo_t rotuloPos; // "R01"
 
 // Assinaturas de funções
 void avaliaExpressao(tipoDado tipoCertoPre, tipoDado tipoCertoPos, tipoDado tipoRetorno);
@@ -221,7 +225,8 @@ rotulo:
 // Regra 18
 comando_sem_rotulo: 
     atribuicao
-    |
+    | comando_composto
+    | comando_repetitivo
 ;
 
 
@@ -241,6 +246,34 @@ atribuicao:
       }
       sprintf(comando, "ARMZ %d %d", attr.nivel, attr.vsAttr.desloc);
       geraCodigo(NULL, comando);
+    }
+;
+
+
+// Regra 23
+comando_repetitivo:
+    WHILE
+    {
+      proximoRotulo(rotuloPre);
+      proximoRotulo(rotuloPos);
+
+      geraCodigo(rotuloPre, "NADA");
+    }
+    expressao
+    {
+      sprintf(comando, "DSVF %s", rotuloPos);
+      geraCodigo(NULL, comando);
+
+      insereDoisRotulos(pilhaRotulos, rotuloPre, rotuloPos);
+    }
+    DO comando_sem_rotulo
+    {
+      removeDoisRotulos(pilhaRotulos, rotuloPre, rotuloPos);
+
+      sprintf(comando, "DSVS %s", rotuloPre);
+      geraCodigo(NULL, comando);
+
+      geraCodigo(rotuloPos, "NADA");
     }
 ;
 
@@ -437,6 +470,7 @@ int main (int argc, char** argv) {
   pilhaTipo = inicializaPilha();
   pilhaAttrs = inicializaPilha();
   pilhaOperacoes = inicializaPilha();
+  pilhaRotulos = inicializaPilha();
 
 // Parsing do codigo
   yyin=fp;
@@ -448,6 +482,7 @@ int main (int argc, char** argv) {
   destroiPilha(pilhaTipo);
   destroiPilha(pilhaAttrs);
   destroiPilha(pilhaOperacoes);
+  destroiPilha(pilhaRotulos);
 
   return 0;
 }
