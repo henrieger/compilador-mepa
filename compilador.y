@@ -60,6 +60,7 @@ void avaliaExpressao(tipoDado tipoCertoPre, tipoDado tipoCertoPos, tipoDado tipo
 
 %%
 
+// Regra 1
 programa:
     {
         geraCodigo (NULL, "INPP");
@@ -76,7 +77,9 @@ cabecalho_programa:
     | IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES
 ;
 
-bloco:
+
+// Regra 2
+bloco: 
     parte_declara_vars
     {
     }
@@ -106,9 +109,8 @@ bloco:
 ;
 
 
-
-
-parte_declara_vars:
+// Regra 8
+parte_declara_vars: 
      var
 ;
 
@@ -121,7 +123,9 @@ var:
     |
 ;
 
-declara_vars:
+
+// Regra 9
+declara_vars: 
     declara_vars declara_var
     | declara_var
 ;
@@ -184,13 +188,16 @@ lista_id_var:
     }
 ;
 
-lista_idents:
+
+// Regra 10
+lista_idents: 
     lista_idents VIRGULA IDENT
     | IDENT
 ;
 
 
-comando_composto:
+// Regra 16
+comando_composto: 
     T_BEGIN comandos T_END
 ;
 
@@ -199,7 +206,9 @@ comandos:
     | comando
 ;
 
-comando:
+
+// Regra 17
+comando: 
     rotulo comando_sem_rotulo
     | comando_sem_rotulo
 ;
@@ -208,12 +217,16 @@ rotulo:
     NUMERO DOIS_PONTOS
 ;
 
-comando_sem_rotulo:
+
+// Regra 18
+comando_sem_rotulo: 
     atribuicao
     |
 ;
 
-atribuicao:
+
+// Regra 19
+atribuicao: 
     variavel ATRIBUICAO expressao
     {
       attrsSimbolo_t attr;
@@ -231,26 +244,30 @@ atribuicao:
     }
 ;
 
-expressao:
+
+// Regra 25
+expressao: 
     expressao_simples
     | expressao_simples relacao expressao_simples {avaliaExpressao(TIPO_NULO, TIPO_NULO, BOOLEAN);}
 ;
 
-relacao:
+
+// Regra 26
+relacao: 
     IGUAL {push(pilhaOperacoes, (void *) "CMIG", TAM_OP);}
     | DIF {push(pilhaOperacoes, (void *) "CMDG", TAM_OP);}
     | MAIOR {push(pilhaOperacoes, (void *) "CMMA", TAM_OP);}
-    | MAIOR_IGUAL {push(pilhaOperacoes, (void *) "CMAI", TAM_OP);}
+    | MAIOR_IGUAL {push(pilhaOperacoes, (void *) "CMAG", TAM_OP);}
     | MENOR {push(pilhaOperacoes, (void *) "CMME", TAM_OP);}
-    | MENOR_IGUAL {push(pilhaOperacoes, (void *) "CMEI", TAM_OP);}
+    | MENOR_IGUAL {push(pilhaOperacoes, (void *) "CMEG", TAM_OP);}
 ;
 
-expressao_simples:
+
+// Regra 27
+expressao_simples: 
     lista_termos
     | MAIS lista_termos
-    | MENOS lista_termos
-    {
-    }
+    | MENOS lista_termos {geraCodigo(NULL, "INVR");}
 ;
 
 lista_termos:
@@ -268,7 +285,9 @@ operacao_termos_bool:
     OR {push(pilhaOperacoes, (void *) "DISJ", TAM_OP);}
 ;
 
-termo:
+
+// Regra 28
+termo: 
     termo operacao_fatores_bool fator {avaliaExpressao(BOOLEAN, BOOLEAN, BOOLEAN);} 
     | termo operacao_fatores_int fator {avaliaExpressao(INTEGER, INTEGER, INTEGER);} 
     | fator
@@ -283,7 +302,9 @@ operacao_fatores_bool:
     AND {push(pilhaOperacoes, (void *) "CONJ", TAM_OP);}
 ;
 
-fator:
+
+// Regra 29
+fator: 
     variavel
     {
       attrsSimbolo_t attr;
@@ -316,7 +337,9 @@ fator:
      | NOT fator
 ;
 
-variavel:
+
+// Regra 30
+variavel: 
     IDENT
     {
       attrsSimbolo_t *attr = buscaSimbolo(tabSim, token);
@@ -334,6 +357,8 @@ variavel:
     }
 ;
 
+
+// Regra 31
 // chamada_funcao:
 //     IDENT
 //     | IDENT 
