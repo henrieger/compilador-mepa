@@ -254,7 +254,7 @@ expressao_simples:
 ;
 
 lista_termos:
-    lista_termos operacao_termos_int termo {printf("oi");avaliaExpressao(INTEGER, INTEGER, INTEGER);} 
+    lista_termos operacao_termos_int termo {avaliaExpressao(INTEGER, INTEGER, INTEGER);} 
     | lista_termos operacao_termos_bool termo {avaliaExpressao(BOOLEAN, BOOLEAN, BOOLEAN);} 
     | termo
 ;
