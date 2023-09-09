@@ -4,16 +4,16 @@
 # include <string.h>
 
 // Insere um tipo de dado novo na tabela de simbolos
-int insereTipoDado(tabelaSimbolos ts, char *ident, unsigned int tam, char nivel)
+int insereTipoDado(tabelaSimbolos_t ts, char *ident, unsigned int tam, char nivel)
 {
-  struct tipoDadoAttr tdAttr = _tipoDado(tam);
+  struct tipoDadoAttr tdAttr = tipoDado(tam);
   attrsSimbolo_t *attrs = inicializaAttrsSimbolo(TIPO_DADO, nivel);
   attrs->tdAttr = tdAttr;
   return insereSimbolo(ts, ident, attrs);
 }
 
 // Retorna o tipo de dados na pilha
-tipoDado buscaTipoDado(tabelaSimbolos ts, char *ident)
+tipoDado_t buscaTipoDado(tabelaSimbolos_t ts, char *ident)
 {
   for (int i = tamPilha(ts) - sizeof(simbolo_t); i >= 0; i -= sizeof(simbolo_t))
   {
@@ -26,13 +26,13 @@ tipoDado buscaTipoDado(tabelaSimbolos ts, char *ident)
 }
 
 // Retorna um ponteiro para o tipo de dados na pilha
-void *getTipoDadoPointer(tabelaSimbolos ts, tipoDado td)
+void *getTipoDadoPointer(tabelaSimbolos_t ts, tipoDado_t td)
 {
   return ts->mem+td;
 }
 
 // Define o tipo de dados das últimas n entradas da tabela de símbolos
-int defineTipoUltimasNEntradas(tabelaSimbolos ts, int n, tipoDado td)
+int defineTipoUltimasNEntradas(tabelaSimbolos_t ts, int n, tipoDado_t td)
 {
   for (int i = 0; i < n; i++)
   {
@@ -46,25 +46,25 @@ int defineTipoUltimasNEntradas(tabelaSimbolos ts, int n, tipoDado td)
 }
 
 // Retorna o tamanho da pilha de tipos
-inline int tamPilhaTipos(pilhaTipos pt)
+inline int tamPilhaTipos(pilhaTipos_t pt)
 {
   return tamPilhaInt(pt);
 }
 
 // Insere um tipo na pilha de tipos
-inline int pushTipo(pilhaTipos pt, tipoDado td)
+inline int pushTipo(pilhaTipos_t pt, tipoDado_t td)
 {
   return pushInt(pt, td);
 }
 
 // Retorna o tipo no topo da pilha de tipos
-inline tipoDado topTipo(pilhaTipos pt)
+inline tipoDado_t topTipo(pilhaTipos_t pt)
 {
   return topInt(pt);
 }
 
 // Remove um tipo da pilha de tipos
-inline tipoDado popTipo(pilhaTipos pt)
+inline tipoDado_t popTipo(pilhaTipos_t pt)
 {
   return popInt(pt);
 }

@@ -8,7 +8,7 @@
 
 int main()
 {
-  tabelaSimbolos ts = inicializaPilha();
+  tabelaSimbolos_t ts = inicializaPilha();
 
   printTabelaSimbolos(ts);
 
@@ -16,9 +16,9 @@ int main()
   insereTipoDado(ts, "real", 4, 0);
   insereTipoDado(ts, "boolean", 1, 0);
 
-  tipoDado INTEGER = buscaTipoDado(ts, "integer");
-  tipoDado REAL = buscaTipoDado(ts, "real");
-  tipoDado BOOLEAN = buscaTipoDado(ts, "boolean");
+  tipoDado_t INTEGER = buscaTipoDado(ts, "integer");
+  tipoDado_t REAL = buscaTipoDado(ts, "real");
+  tipoDado_t BOOLEAN = buscaTipoDado(ts, "boolean");
 
   printTabelaSimbolos(ts);
   printf("\nTipo INTEGER: %d\n", INTEGER);

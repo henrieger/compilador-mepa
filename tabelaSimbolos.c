@@ -89,7 +89,7 @@ struct rotuloAttr rotulo(unsigned int linhaCodigo)
 }
 
 // Insere um simbolo na tabela de simbolos
-int insereSimbolo(tabelaSimbolos ts, char *ident, attrsSimbolo_t *as)
+int insereSimbolo(tabelaSimbolos_t ts, char *ident, attrsSimbolo_t *as)
 {
   simbolo_t s;
 
@@ -102,7 +102,7 @@ int insereSimbolo(tabelaSimbolos ts, char *ident, attrsSimbolo_t *as)
 }
 
 // Retorna struct com atributos de tipo de dados
-struct tipoDadoAttr _tipoDado(unsigned int tam)
+struct tipoDadoAttr tipoDado(unsigned int tam)
 {
   struct tipoDadoAttr td;
   td.tam = tam;
@@ -111,7 +111,7 @@ struct tipoDadoAttr _tipoDado(unsigned int tam)
 }
 
 // Busca atributos de um simbolo
-attrsSimbolo_t *buscaSimbolo(tabelaSimbolos ts, char *ident)
+attrsSimbolo_t *buscaSimbolo(tabelaSimbolos_t ts, char *ident)
 {
   for (int i = tamPilha(ts) - sizeof(simbolo_t); i >= 0; i -= sizeof(simbolo_t))
   {
@@ -124,7 +124,7 @@ attrsSimbolo_t *buscaSimbolo(tabelaSimbolos ts, char *ident)
 }
 
 // Retira últimos n símbolos da tabela
-int retiraSimbolos(tabelaSimbolos ts, int n)
+int retiraSimbolos(tabelaSimbolos_t ts, int n)
 {
   for (int i = 0; i < n; i++)
   {
@@ -190,7 +190,7 @@ void printSimbolo(char *ident, attrsSimbolo_t* as)
 }
 
 // Imprime a tabela de simbolos
-void printTabelaSimbolos(tabelaSimbolos ts)
+void printTabelaSimbolos(tabelaSimbolos_t ts)
 {
   printf(" -- TABELA DE SIMBOLOS --\n");
   for (int i = tamPilha(ts) - sizeof(simbolo_t); i >= 0; i -= sizeof(simbolo_t))

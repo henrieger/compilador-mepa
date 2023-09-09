@@ -22,19 +22,19 @@ int nivel_lexico = 0;
 int desloc = 0;
 
 // Pilhas
-tabelaSimbolos tabSim;
-pilhaTipos pilhaTipo;
+tabelaSimbolos_t tabelaSimbolos;
+pilhaTipos_t pilhaTipos;
 pilhaRotulos_t pilhaRotulos;
 pilha_t *pilhaAttrs;
 pilha_t *pilhaOperacoes;
 
 // Tipos de dados primitivos
-tipoDado INTEGER;
-tipoDado REAL;
-tipoDado BOOLEAN;
-// # define INTEGER buscaTipoDado(tabSim, "integer")
-// # define REAL buscaTipoDado(tabSim, "real")
-// # define BOOLEAN buscaTipoDado(tabSim, "boolean")
+tipoDado_t INTEGER;
+tipoDado_t REAL;
+tipoDado_t BOOLEAN;
+// # define INTEGER buscaTipoDado(tabelaSimbolos, "integer")
+// # define REAL buscaTipoDado(tabelaSimbolos, "real")
+// # define BOOLEAN buscaTipoDado(tabelaSimbolos, "boolean")
 
 
 
@@ -45,7 +45,7 @@ rotulo_t rotuloPre; // "R00"
 rotulo_t rotuloPos; // "R01"
 
 // Assinaturas de funções
-void avaliaExpressao(tipoDado tipoCertoPre, tipoDado tipoCertoPos, tipoDado tipoRetorno);
+void avaliaExpressao(tipoDado_t tipoCertoPre, tipoDado_t tipoCertoPos, tipoDado_t tipoRetorno);
 
 %}
 
@@ -95,11 +95,11 @@ bloco:
 
     {
       int dmem_qtd = 0;
-      simbolo_t *ultimoSimbolo = (simbolo_t *) top(tabSim, sizeof(simbolo_t));
+      simbolo_t *ultimoSimbolo = (simbolo_t *) top(tabelaSimbolos, sizeof(simbolo_t));
       
       while (
         ultimoSimbolo &&
-        (void *) ultimoSimbolo > (void *) tabSim &&
+        (void *) ultimoSimbolo > (void *) tabelaSimbolos &&
         ultimoSimbolo->attrs->cat == VAR_SIMPLES &
         ultimoSimbolo->attrs->nivel == nivel_lexico
       )
@@ -108,7 +108,7 @@ bloco:
         ultimoSimbolo--;
       }
 
-      retiraSimbolos(tabSim, dmem_qtd);
+      retiraSimbolos(tabelaSimbolos, dmem_qtd);
       char dmemStr[16];
       sprintf(dmemStr, "DMEM %d", dmem_qtd);
       geraCodigo(NULL, dmemStr);
@@ -145,7 +145,7 @@ declara_var :
     tipo
     {
         // Define o tipo
-        tipoDado tipo = buscaTipoDado(tabSim, token);
+        tipoDado_t tipo = buscaTipoDado(tabelaSimbolos, token);
         # ifdef DEBUG
         printf("Tipo encontrado para %s: %d\n", token, tipo);
         # endif
@@ -154,9 +154,9 @@ declara_var :
           sprintf(erro, "Tipo %s não definido", token);
           yyerror(erro);
         }
-        defineTipoUltimasNEntradas(tabSim, num_vars, tipo);
+        defineTipoUltimasNEntradas(tabelaSimbolos, num_vars, tipo);
         # ifdef DEBUG
-        printTabelaSimbolos(tabSim);
+        printTabelaSimbolos(tabelaSimbolos);
         # endif
 
         /* AMEM */
@@ -176,10 +176,10 @@ lista_id_var:
         /* insere �ltima vars na tabela de s�mbolos */
         attrsSimbolo_t *attrs = inicializaAttrsSimbolo(VAR_SIMPLES, nivel_lexico); 
         attrs->vsAttr = varSimples(TIPO_NULO, desloc);
-        insereSimbolo(tabSim, token, attrs);
+        insereSimbolo(tabelaSimbolos, token, attrs);
         desloc++; num_vars++;
         # ifdef DEBUG
-        printTabelaSimbolos(tabSim);
+        printTabelaSimbolos(tabelaSimbolos);
         # endif
     }
     | IDENT
@@ -187,10 +187,10 @@ lista_id_var:
         /* insere vars na tabela de s�mbolos */
         attrsSimbolo_t *attrs = inicializaAttrsSimbolo(VAR_SIMPLES, nivel_lexico); 
         attrs->vsAttr = varSimples(TIPO_NULO, desloc);
-        insereSimbolo(tabSim, token, attrs);
+        insereSimbolo(tabelaSimbolos, token, attrs);
         desloc++; num_vars++;
         # ifdef DEBUG
-        printTabelaSimbolos(tabSim);
+        printTabelaSimbolos(tabelaSimbolos);
         # endif
     }
 ;
@@ -240,7 +240,7 @@ atribuicao:
     {
       attrsSimbolo_t attr;
       pop(pilhaAttrs, &attr, sizeof(attrsSimbolo_t));
-      tipoDado tipoExpressao = popTipo(pilhaTipo);
+      tipoDado_t tipoExpressao = popTipo(pilhaTipos);
       # ifdef DEBUG
       printf("Tipo da expressao: %d\nTipo da variavel: %d\n", tipoExpressao, attr.vsAttr.tipo);
       # endif
@@ -386,20 +386,20 @@ fator:
         sprintf(erro, "Símbolo %s não é variável", token);
         yyerror(erro);
       }
-      pushTipo(pilhaTipo, attr.vsAttr.tipo);
+      pushTipo(pilhaTipos, attr.vsAttr.tipo);
       # ifdef DEBUG
       printf("-- PILHA DE TIPOS --\n");
-      imprimePilha(pilhaTipo, sizeof(tipoDado));
+      imprimePilha(pilhaTipos, sizeof(tipoDado_t));
       # endif
       sprintf(comando, "CRVL %d,%d", attr.nivel, attr.vsAttr.desloc);
       geraCodigo(NULL, comando);
     }
      | NUMERO
       {
-        pushTipo(pilhaTipo, INTEGER);
+        pushTipo(pilhaTipos, INTEGER);
         # ifdef DEBUG
         printf("-- PILHA DE TIPOS --\n");
-        imprimePilha(pilhaTipo, sizeof(tipoDado));
+        imprimePilha(pilhaTipos, sizeof(tipoDado_t));
         # endif
         sprintf(comando, "CRCT %s", token);
         geraCodigo(NULL, comando);
@@ -414,7 +414,7 @@ fator:
 variavel: 
     IDENT
     {
-      attrsSimbolo_t *attr = buscaSimbolo(tabSim, token);
+      attrsSimbolo_t *attr = buscaSimbolo(tabelaSimbolos, token);
       if (!attr)
       {
         sprintf(erro, "Variável %s não definida", token);
@@ -439,10 +439,10 @@ variavel:
 
 %%
 
-void avaliaExpressao(tipoDado tipoCertoPre, tipoDado tipoCertoPos, tipoDado tipoRetorno)
+void avaliaExpressao(tipoDado_t tipoCertoPre, tipoDado_t tipoCertoPos, tipoDado_t tipoRetorno)
 {
-  tipoDado dadoPos = popTipo(pilhaTipo);
-  tipoDado dadoPre = popTipo(pilhaTipo);
+  tipoDado_t dadoPos = popTipo(pilhaTipos);
+  tipoDado_t dadoPre = popTipo(pilhaTipos);
 
   if (tipoCertoPos > TIPO_NULO && dadoPos != tipoCertoPos)
   {
@@ -465,10 +465,10 @@ void avaliaExpressao(tipoDado tipoCertoPre, tipoDado tipoCertoPos, tipoDado tipo
   pop(pilhaOperacoes, (void *) comando, TAM_OP);
   geraCodigo(NULL, comando);
 
-  pushTipo(pilhaTipo, tipoRetorno);
+  pushTipo(pilhaTipos, tipoRetorno);
   # ifdef DEBUG
   printf("-- PILHA DE TIPOS --\n");
-  imprimePilha(pilhaTipo, sizeof(tipoDado));
+  imprimePilha(pilhaTipos, sizeof(tipoDado_t));
   # endif
 }
 
@@ -491,22 +491,22 @@ int main (int argc, char** argv) {
 /* -------------------------------------------------------------------
  *  Inicia a Tabela de S�mbolos
  * ------------------------------------------------------------------- */
-  tabSim = inicializaPilha();
+  tabelaSimbolos = inicializaPilha();
 
-  insereTipoDado(tabSim, "integer", 4, 0);
-  insereTipoDado(tabSim, "real", 4, 0);
-  insereTipoDado(tabSim, "boolean", 1, 0);
+  insereTipoDado(tabelaSimbolos, "integer", 4, 0);
+  insereTipoDado(tabelaSimbolos, "real", 4, 0);
+  insereTipoDado(tabelaSimbolos, "boolean", 1, 0);
 
-  INTEGER = buscaTipoDado(tabSim, "integer");
-  REAL = buscaTipoDado(tabSim, "real");
-  BOOLEAN = buscaTipoDado(tabSim, "boolean");
+  INTEGER = buscaTipoDado(tabelaSimbolos, "integer");
+  REAL = buscaTipoDado(tabelaSimbolos, "real");
+  BOOLEAN = buscaTipoDado(tabelaSimbolos, "boolean");
   
   # ifdef DEBUG
   printf("INTEGER: %d\nREAL: %d\nBOOLEAN: %d\n", INTEGER, REAL, BOOLEAN);
   # endif
 
 // Inicializa pilhas extras
-  pilhaTipo = inicializaPilha();
+  pilhaTipos = inicializaPilha();
   pilhaAttrs = inicializaPilha();
   pilhaOperacoes = inicializaPilha();
   pilhaRotulos = inicializaPilha();
@@ -516,9 +516,9 @@ int main (int argc, char** argv) {
   yyparse();
 
 // Destroi estruturas
-  retiraSimbolos(tabSim, 3);
-  destroiPilha(tabSim);
-  destroiPilha(pilhaTipo);
+  retiraSimbolos(tabelaSimbolos, 3);
+  destroiPilha(tabelaSimbolos);
+  destroiPilha(pilhaTipos);
   destroiPilha(pilhaAttrs);
   destroiPilha(pilhaOperacoes);
   destroiPilha(pilhaRotulos);

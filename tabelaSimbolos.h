@@ -4,7 +4,7 @@
 # include "compilador.h"
 # include "pilha.h"
 
-# define tabelaSimbolos pilha_t *
+# define tabelaSimbolos_t pilha_t *
 
 enum simbCat
 {
@@ -106,16 +106,16 @@ struct funcaoAttr funcao(int tipo, char *rotulo, unsigned int numParam, listaPar
 struct rotuloAttr rotulo(unsigned int linhaCodigo);
 
 // Retorna struct com atributos de tipo de dados
-struct tipoDadoAttr _tipoDado(unsigned int tam);
+struct tipoDadoAttr tipoDado(unsigned int tam);
 
 // Insere um simbolo na tabela de simbolos
-int insereSimbolo(tabelaSimbolos ts, char *ident, attrsSimbolo_t *as);
+int insereSimbolo(tabelaSimbolos_t ts, char *ident, attrsSimbolo_t *as);
 
 // Busca atributos de um simbolo
-attrsSimbolo_t *buscaSimbolo(tabelaSimbolos ts, char *ident);
+attrsSimbolo_t *buscaSimbolo(tabelaSimbolos_t ts, char *ident);
 
 // Retira últimos n símbolos da tabela
-int retiraSimbolos(tabelaSimbolos ts, int n);
+int retiraSimbolos(tabelaSimbolos_t ts, int n);
 
 // Destroi lista de parametros
 void destroiListaParametros(listaParam_t *l);
@@ -127,6 +127,6 @@ void destroiAttrsSimbolo(attrsSimbolo_t *as);
 void printSimbolo(char *ident, attrsSimbolo_t* as);
 
 // Imprime a tabela de simbolos
-void printTabelaSimbolos(tabelaSimbolos ts);
+void printTabelaSimbolos(tabelaSimbolos_t ts);
 
 # endif
