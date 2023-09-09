@@ -1,5 +1,6 @@
 # include "tabelaSimbolos.h"
 
+# include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include "compilador.h"
@@ -25,7 +26,7 @@ listaParam_t *inicializaListaParam(int tam)
 }
 
 // Retorna um parametro de função/procedimento
-listaParam_t param(void *tipo, char porRef)
+listaParam_t param(int tipo, char porRef)
 {
   listaParam_t p;
   p.tipo = tipo;
@@ -35,7 +36,7 @@ listaParam_t param(void *tipo, char porRef)
 }
 
 // Retorna struct com atributos de variavel simples
-struct varSimplesAttr varSimples(void *tipo, unsigned int desloc)
+struct varSimplesAttr varSimples(int tipo, unsigned int desloc)
 {
   struct varSimplesAttr vs;
   vs.tipo = tipo;
@@ -45,7 +46,7 @@ struct varSimplesAttr varSimples(void *tipo, unsigned int desloc)
 }
 
 // Retorna struct com atributos de parametro formal
-struct paramFormalAttr paramFormal(void *tipo, unsigned int desloc, char porRef)
+struct paramFormalAttr paramFormal(int tipo, unsigned int desloc, char porRef)
 {
   struct paramFormalAttr pf;
   pf.tipo = tipo;
@@ -67,7 +68,7 @@ struct procedimentoAttr procedimento(char *rotulo, unsigned int numParam, listaP
 }
 
 // Retorna struct com atributos de procedimento
-struct funcaoAttr funcao(void *tipo, char *rotulo, unsigned int numParam, listaParam_t *parametros)
+struct funcaoAttr funcao(int tipo, char *rotulo, unsigned int numParam, listaParam_t *parametros)
 {
   struct funcaoAttr f;
   f.tipoRetorno = tipo;
@@ -152,4 +153,49 @@ void destroiAttrsSimbolo(attrsSimbolo_t *as)
     destroiListaParametros(as->funAttr.parametros);
 
   free(as);
+}
+
+// Imprime um simbolo na tela
+void printSimbolo(char *ident, attrsSimbolo_t* as)
+{
+  printf("Símbolo: %s\n{\n\tCategoria: %d\n\tNível: %d\n", ident, as->cat, as->nivel);
+  switch (as->cat)
+  {
+    case VAR_SIMPLES:
+      printf("\tDeslocamento: %d\n\tTipo: %d\n", as->vsAttr.desloc, as->vsAttr.tipo);
+      break;
+    case PARAM_FORMAL:
+      printf("\tDeslocamento: %d\n\tTipo: %d\n\tPor referência: %d\n", as->pfAttr.desloc, as->pfAttr.tipo, as->pfAttr.porRef);
+      break;
+    case PROCEDIMENTO:
+      printf("\tRótulo: %s\n\tNúmero de parâmetros: %d\n\tParâmetros:\n\t{\n", as->procAttr.rotulo, as->procAttr.numParam);
+      for (int i = 0; i < as->procAttr.numParam; i++)
+        printf("\t\tTipo: %d\n\t\tPor referência: %d\n", as->procAttr.parametros[i].tipo, as->procAttr.parametros[i].porRef);
+      printf("\t}\n");
+      break;
+    case FUNCAO:
+      printf("\tTipo do retorno: %d\n\tRótulo: %s\n\tNúmero de parâmetros: %d\n\tParâmetros:\n\t{\n", as->funAttr.tipoRetorno, as->funAttr.rotulo, as->funAttr.numParam);
+      for (int i = 0; i < as->funAttr.numParam; i++)
+        printf("\t\tTipo: %d\n\t\tPor referência: %d\n", as->funAttr.parametros[i].tipo, as->funAttr.parametros[i].porRef);
+      printf("\t}\n");
+      break;
+    case ROTULO:
+      printf("\tLinha de código: %d\n", as->rotAttr.linhaCodigo);
+      break;
+    case TIPO_DADO:
+      printf("\tTamanho: %d\n", as->tdAttr.tam);
+      break;
+  }
+  printf("}\n");
+}
+
+// Imprime a tabela de simbolos
+void printTabelaSimbolos(tabelaSimbolos ts)
+{
+  printf(" -- TABELA DE SIMBOLOS --\n");
+  for (int i = tamPilha(ts) - sizeof(simbolo_t); i >= 0; i -= sizeof(simbolo_t))
+  {
+    simbolo_t *s =(simbolo_t *) (ts->mem + i);
+    printSimbolo(s->ident, s->attrs);
+  }
 }

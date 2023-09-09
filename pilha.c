@@ -1,5 +1,6 @@
 # include "pilha.h"
 
+# include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 
@@ -85,6 +86,18 @@ int destroiPilha(pilha_t *p)
   if (p->mem) free(p->mem);
   free(p);
   return 0;
+}
+
+// Imprime o conteudo da pilha byte a byte
+void imprimePilha(pilha_t *p, int tam)
+{
+  for (int i = tamPilha(p) - tam; i >= 0; i -= tam)
+  {
+    printf("%d: ", i);
+    for (int j = 0; j < tam; j++)
+      printf("%x ", ((unsigned char *)(p->mem))[i+j]);
+    printf("\n");
+  }
 }
 
 // ---- FUNCOES EXTRAS ---- //

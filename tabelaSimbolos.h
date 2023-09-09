@@ -18,20 +18,20 @@ enum simbCat
 
 struct varSimplesAttr
 {
-  void *tipo;
+  int tipo;
   unsigned int desloc;
 };
 
 struct paramFormalAttr
 {
-  void *tipo;
+  int tipo;
   unsigned int desloc;
   char porRef;
 };
 
 typedef struct listaParam
 {
-  void *tipo;
+  int tipo;
   char porRef;
 } listaParam_t;
 
@@ -45,7 +45,7 @@ struct procedimentoAttr
 struct funcaoAttr
 {
   char rotulo[16];
-  void *tipoRetorno;
+  int tipoRetorno;
   unsigned int numParam;
   listaParam_t *parametros;
 };
@@ -88,19 +88,19 @@ attrsSimbolo_t *inicializaAttrsSimbolo(enum simbCat cat, char nivel);
 listaParam_t *inicializaListaParam(int tam);
 
 // Retorna um parametro de função/procedimento
-listaParam_t param(void *tipo, char porRef);
+listaParam_t param(int tipo, char porRef);
 
 // Retorna struct com atributos de variavel simples
-struct varSimplesAttr varSimples(void *tipo, unsigned int desloc);
+struct varSimplesAttr varSimples(int tipo, unsigned int desloc);
 
 // Retorna struct com atributos de parametro formal
-struct paramFormalAttr paramFormal(void *tipo, unsigned int desloc, char porRef);
+struct paramFormalAttr paramFormal(int tipo, unsigned int desloc, char porRef);
 
 // Retorna struct com atributos de procedimento
 struct procedimentoAttr procedimento(char *rotulo, unsigned int numParam, listaParam_t *parametros);
 
 // Retorna struct com atributos de procedimento
-struct funcaoAttr funcao(void *tipo, char *rotulo, unsigned int numParam, listaParam_t *parametros);
+struct funcaoAttr funcao(int tipo, char *rotulo, unsigned int numParam, listaParam_t *parametros);
 
 // Retorna struct com atributos de rótulo
 struct rotuloAttr rotulo(unsigned int linhaCodigo);
@@ -122,5 +122,11 @@ void destroiListaParametros(listaParam_t *l);
 
 // Destroi estruturas do símbolo
 void destroiAttrsSimbolo(attrsSimbolo_t *as);
+
+// Imprime um simbolo na tela
+void printSimbolo(char *ident, attrsSimbolo_t* as);
+
+// Imprime a tabela de simbolos
+void printTabelaSimbolos(tabelaSimbolos ts);
 
 # endif

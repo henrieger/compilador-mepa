@@ -5,7 +5,7 @@
  *              Autor: Bruno Muller Junior
  *               Data: 08/2007
  *     Modificado por: Henrique Luiz Rieger
- *      Atualizado em: [12/08/2023, 16h:24m]
+ *      Atualizado em: [09/09/2023, 00h:00m]
  *
  * -------------------------------------------------------------------
  *
@@ -40,7 +40,12 @@ void geraCodigo (char* rot, char* comando) {
   }
 }
 
-int imprimeErro ( char* erro ) {
+int imprimeErro ( const char* erro ) {
   fprintf (stderr, "Erro na linha %d - %s\n", nl, erro);
   exit(-1);
 }
+
+void yyerror(const char *s)
+{
+  imprimeErro(s);
+} 

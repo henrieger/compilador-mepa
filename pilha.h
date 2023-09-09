@@ -31,6 +31,9 @@ int pop(pilha_t *p, void *ret, size_t tam);
 // Destroi elementos internos da pilha
 int destroiPilha(pilha_t *p);
 
+// Imprime o conteudo da pilha byte a byte
+void imprimePilha(pilha_t *p, int size);
+
 // ---- FUNCOES EXTRAS ---- //
 
 // Tamanho de uma pilha de char

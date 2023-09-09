@@ -5,7 +5,7 @@
  *              Autor: Bruno Muller Junior
  *               Data: 08/2007
  *     Modificado por: Henrique Luiz Rieger
- *      Atualizado em: [12/08/2023, 16h:22m]
+ *      Atualizado em: [09/09/2023, 00h:00m]
  *
  * -------------------------------------------------------------------
  *
@@ -67,16 +67,6 @@ type {
 array {
     subrotina_token(simb_array, "array\t\t\t");
     return ARRAY;
-}
-
-"\[" {
-    subrotina_token(simb_abre_colchetes, "\tabre_colchetes\t");
-    return ABRE_COLCHETES;
-}
-
-"\]" {
-    subrotina_token(simb_fecha_colchetes, "\tfecha_colchetes");
-    return FECHA_COLCHETES;
 }
 
 "\[" {
