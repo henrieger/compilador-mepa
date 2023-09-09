@@ -62,6 +62,9 @@ void avaliaExpressao(tipoDado tipoCertoPre, tipoDado tipoCertoPos, tipoDado tipo
 %token NOT
 %token NUMERO
 
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
+
 %%
 
 // Regra 1
@@ -226,6 +229,7 @@ rotulo:
 comando_sem_rotulo: 
     atribuicao
     | comando_composto
+    | comando_condicional
     | comando_repetitivo
 ;
 
@@ -249,6 +253,41 @@ atribuicao:
     }
 ;
 
+
+// Regra 22
+comando_condicional:
+    IF expressao
+    {
+      proximoRotulo(rotuloPre);
+      proximoRotulo(rotuloPos);
+
+      sprintf(comando, "DSVF %s", rotuloPre);
+      geraCodigo(NULL, comando);
+
+      insereDoisRotulos(pilhaRotulos, rotuloPre, rotuloPos);
+    }
+    THEN comando_sem_rotulo
+    {
+      removeDoisRotulos(pilhaRotulos, rotuloPre, rotuloPos);
+
+      sprintf(comando, "DSVS %s", rotuloPos);
+      geraCodigo(NULL, comando);
+
+      geraCodigo(rotuloPre, "NADA");
+
+      insereRotulo(pilhaRotulos, rotuloPos);
+    }
+    else
+    {
+      popRotulo(pilhaRotulos, rotuloPos);
+      geraCodigo(rotuloPos, "NADA");
+    }
+;
+
+else:
+    ELSE comando_sem_rotulo
+    | %prec LOWER_THAN_ELSE
+;
 
 // Regra 23
 comando_repetitivo:
