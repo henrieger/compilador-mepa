@@ -244,7 +244,7 @@ atribuicao:
       {
         yyerror("Tipo da expressão incompatível com a variável");
       }
-      sprintf(comando, "ARMZ %d %d", attr.nivel, attr.vsAttr.desloc);
+      sprintf(comando, "ARMZ %d,%d", attr.nivel, attr.vsAttr.desloc);
       geraCodigo(NULL, comando);
     }
 ;
@@ -352,7 +352,7 @@ fator:
       printf("-- PILHA DE TIPOS --\n");
       imprimePilha(pilhaTipo, sizeof(tipoDado));
       # endif
-      sprintf(comando, "CRVL %d %d", attr.nivel, attr.vsAttr.desloc);
+      sprintf(comando, "CRVL %d,%d", attr.nivel, attr.vsAttr.desloc);
       geraCodigo(NULL, comando);
     }
      | NUMERO
