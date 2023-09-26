@@ -12,4 +12,4 @@ begin
       k:=k+1          
    end                 
    (* write(n,k) *)         
-   end. 
+end. 

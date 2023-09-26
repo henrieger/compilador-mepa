@@ -27,15 +27,12 @@ pilhaTipos_t pilhaTipos;
 pilhaRotulos_t pilhaRotulos;
 pilha_t *pilhaAttrs;
 pilha_t *pilhaOperacoes;
+pilha_t *pilhaIdents;
 
 // Tipos de dados primitivos
 tipoDado_t INTEGER;
 tipoDado_t REAL;
 tipoDado_t BOOLEAN;
-// # define INTEGER buscaTipoDado(tabelaSimbolos, "integer")
-// # define REAL buscaTipoDado(tabelaSimbolos, "real")
-// # define BOOLEAN buscaTipoDado(tabelaSimbolos, "boolean")
-
 
 
 // Variáveis auxiliares
@@ -89,26 +86,38 @@ cabecalho_programa:
 bloco: 
     parte_declara_vars
     {
+      proximoRotulo(rotuloPre);
+      sprintf(comando, "DSVS %s", rotuloPre);
+      geraCodigo(NULL, comando);
+      insereRotulo(pilhaRotulos, rotuloPre);
+    }
+    parte_declara_subrotinas
+    {
+      popRotulo(pilhaRotulos, rotuloPre);
+      geraCodigo(rotuloPre, "NADA");
+      # ifdef DEBUG
+      printTabelaSimbolos(tabelaSimbolos);
+      # endif
     }
 
     comando_composto
 
     {
-      int dmem_qtd = 0;
+      int dmem_qtd = 0, simbolos_qtd = 0;
       simbolo_t *ultimoSimbolo = (simbolo_t *) top(tabelaSimbolos, sizeof(simbolo_t));
       
-      while (
-        ultimoSimbolo &&
-        (void *) ultimoSimbolo > (void *) tabelaSimbolos &&
-        ultimoSimbolo->attrs->cat == VAR_SIMPLES &
-        ultimoSimbolo->attrs->nivel == nivel_lexico
-      )
+      while (ultimoSimbolo && ((void *) ultimoSimbolo > (void *) tabelaSimbolos->mem) && (ultimoSimbolo->attrs->nivel >= nivel_lexico))
       {
-        dmem_qtd++;
+      simbolos_qtd++;
+        if ((ultimoSimbolo->attrs->nivel == nivel_lexico) && (ultimoSimbolo->attrs->cat == VAR_SIMPLES))
+          dmem_qtd++;
         ultimoSimbolo--;
       }
 
-      retiraSimbolos(tabelaSimbolos, dmem_qtd);
+      retiraSimbolos(tabelaSimbolos, simbolos_qtd-1);
+      # ifdef DEBUG
+      printf("DMEM_QTD: %d, SIMBOLOS_QTD: %d\n", dmem_qtd, simbolos_qtd);
+      # endif
       char dmemStr[16];
       sprintf(dmemStr, "DMEM %d", dmem_qtd);
       geraCodigo(NULL, dmemStr);
@@ -149,11 +158,6 @@ declara_var :
         # ifdef DEBUG
         printf("Tipo encontrado para %s: %d\n", token, tipo);
         # endif
-        if (tipo == TIPO_NULO)
-        {
-          sprintf(erro, "Tipo %s não definido", token);
-          yyerror(erro);
-        }
         defineTipoUltimasNEntradas(tabelaSimbolos, num_vars, tipo);
         # ifdef DEBUG
         printTabelaSimbolos(tabelaSimbolos);
@@ -168,6 +172,14 @@ declara_var :
 
 tipo:
     IDENT
+    {
+      tipoDado_t tipo = buscaTipoDado(tabelaSimbolos, token);
+      if (tipo == TIPO_NULO)
+      {
+        sprintf(erro, "Tipo %s não definido", token);
+        yyerror(erro);
+      }
+    }
 ;
 
 lista_id_var:
@@ -203,6 +215,75 @@ lista_idents:
 ;
 
 
+// Regra 11
+
+
+parte_declara_subrotinas:
+    subrotinas
+    |
+;
+
+subrotinas:
+  subrotinas declara_subrotina PONTO_E_VIRGULA
+  | declara_subrotina PONTO_E_VIRGULA
+;
+
+declara_subrotina:
+    declara_procedure
+    | declara_funcao
+;
+
+
+// Regra 12
+declara_procedure:
+    PROCEDURE
+    IDENT
+    {
+      nivel_lexico++;
+      attrsSimbolo_t *attr = inicializaAttrsSimbolo(PROCEDIMENTO, nivel_lexico);
+      proximoRotulo(rotuloPre);
+      attr->procAttr = procedimento(rotuloPre, 0, NULL);
+      sprintf(comando, "ENPR %d", nivel_lexico);
+      geraCodigo(rotuloPre, comando);
+      insereSimbolo(tabelaSimbolos, token, attr);
+    }
+    parametros_formais
+    PONTO_E_VIRGULA bloco
+    {
+      sprintf(comando, "RTPR %d,%d", nivel_lexico, 0);
+      geraCodigo(NULL, comando);
+      nivel_lexico--;
+    }
+;
+
+
+// Regra 13
+declara_funcao:
+    FUNCTION IDENT parametros_formais DOIS_PONTOS tipo PONTO_E_VIRGULA bloco
+;
+
+
+// Regra 14
+parametros_formais:
+    ABRE_PARENTESES lista_param_formais FECHA_PARENTESES
+    |
+;
+
+lista_param_formais: 
+    lista_param_formais PONTO_E_VIRGULA secao_param_formais
+    | secao_param_formais
+;
+
+
+// Regra 15
+secao_param_formais:
+    lista_idents DOIS_PONTOS tipo
+    | VAR lista_idents DOIS_PONTOS tipo
+    | FUNCTION lista_idents DOIS_PONTOS tipo
+    | PROCEDURE lista_idents DOIS_PONTOS tipo
+;
+
+
 // Regra 16
 comando_composto: 
     T_BEGIN comandos T_END
@@ -227,30 +308,82 @@ rotulo:
 
 // Regra 18
 comando_sem_rotulo: 
-    atribuicao
+    comando_com_identificador
     | comando_composto
     | comando_condicional
     | comando_repetitivo
 ;
 
+comando_com_identificador:
+    IDENT {push(pilhaIdents, token, TAM_TOKEN);}
+    atribuicao_ou_procedimento
+;
+
+atribuicao_ou_procedimento:
+    atribuicao
+    | chamada_procedimento
+;
+
 
 // Regra 19
-atribuicao: 
-    variavel ATRIBUICAO expressao
+atribuicao:
+    ATRIBUICAO expressao
     {
-      attrsSimbolo_t attr;
-      pop(pilhaAttrs, &attr, sizeof(attrsSimbolo_t));
+      char variavel[TAM_TOKEN];
+      pop(pilhaIdents, variavel, TAM_TOKEN);
+      attrsSimbolo_t *attr = buscaSimbolo(tabelaSimbolos, variavel);
+      if (!attr)
+      {
+        sprintf(erro, "Variável %s não definida", variavel);
+        yyerror(erro);
+      }
+      if (attr->cat != VAR_SIMPLES)
+      {
+        sprintf(erro, "Símbolo %s não é variável", variavel);
+        yyerror(erro);
+      }
+      push(pilhaAttrs, (void *) attr, sizeof(attrsSimbolo_t));
+
       tipoDado_t tipoExpressao = popTipo(pilhaTipos);
       # ifdef DEBUG
-      printf("Tipo da expressao: %d\nTipo da variavel: %d\n", tipoExpressao, attr.vsAttr.tipo);
+      printf("Tipo da expressao: %d\nTipo da variavel: %d\n", tipoExpressao, attr->vsAttr.tipo);
       # endif
-      if (attr.vsAttr.tipo != tipoExpressao)
+      if (attr->vsAttr.tipo != tipoExpressao)
       {
         yyerror("Tipo da expressão incompatível com a variável");
       }
-      sprintf(comando, "ARMZ %d,%d", attr.nivel, attr.vsAttr.desloc);
+      sprintf(comando, "ARMZ %d,%d", attr->nivel, attr->vsAttr.desloc);
       geraCodigo(NULL, comando);
     }
+;
+
+
+// Regra 20
+chamada_procedimento:
+    opt_lista_expressoes
+    {
+      char procedimento[TAM_TOKEN];
+      pop(pilhaIdents, procedimento, TAM_TOKEN);
+      attrsSimbolo_t *attr = buscaSimbolo(tabelaSimbolos, procedimento);
+      if (!attr)
+      {
+        sprintf(erro, "Procedimento ou função %s não definido", procedimento);
+        yyerror(erro);
+      }
+      if (attr->cat != PROCEDIMENTO && attr->cat != FUNCAO)
+      {
+        sprintf(erro, "Símbolo %s não é procedimento nem função", procedimento);
+        yyerror(erro);
+      }
+      
+      sprintf(comando, "CHPR %s,%d", attr->procAttr.rotulo, nivel_lexico);
+      geraCodigo(NULL, comando);
+    }
+;
+
+opt_lista_expressoes:
+    ABRE_PARENTESES lista_expressoes FECHA_PARENTESES
+    |
 ;
 
 
@@ -314,6 +447,13 @@ comando_repetitivo:
 
       geraCodigo(rotuloPos, "NADA");
     }
+;
+
+
+// Regra 24
+lista_expressoes:
+    lista_expressoes VIRGULA expressao
+    | expressao
 ;
 
 
@@ -510,6 +650,7 @@ int main (int argc, char** argv) {
   pilhaAttrs = inicializaPilha();
   pilhaOperacoes = inicializaPilha();
   pilhaRotulos = inicializaPilha();
+  pilhaIdents = inicializaPilha();
 
 // Parsing do codigo
   yyin=fp;

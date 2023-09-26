@@ -8,6 +8,9 @@ int rotuloAtual = 0;
 // Gera o próximo rótulo e guarda no endereço especificado
 void proximoRotulo(rotulo_t r)
 {
+  # ifdef DEBUG
+  printf("ÚLTIMO RÓTULO GERADO: %d\n", rotuloAtual);
+  # endif
   sprintf(r, "R%02d", rotuloAtual);
   rotuloAtual = (rotuloAtual + 1) % 100;
 }

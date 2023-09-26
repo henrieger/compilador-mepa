@@ -57,7 +57,7 @@ struct paramFormalAttr paramFormal(int tipo, unsigned int desloc, char porRef)
 }
 
 // Retorna struct com atributos de procedimento
-struct procedimentoAttr procedimento(char *rotulo, unsigned int numParam, listaParam_t *parametros)
+struct procedimentoAttr procedimento(rotulo_t rotulo, unsigned int numParam, listaParam_t *parametros)
 {
   struct procedimentoAttr p;
   memcpy(p.rotulo, rotulo, TAM_TOKEN);
@@ -68,7 +68,7 @@ struct procedimentoAttr procedimento(char *rotulo, unsigned int numParam, listaP
 }
 
 // Retorna struct com atributos de procedimento
-struct funcaoAttr funcao(int tipo, char *rotulo, unsigned int numParam, listaParam_t *parametros)
+struct funcaoAttr funcao(int tipo, rotulo_t rotulo, unsigned int numParam, listaParam_t *parametros)
 {
   struct funcaoAttr f;
   f.tipoRetorno = tipo;

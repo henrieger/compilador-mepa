@@ -3,6 +3,7 @@
 
 # include "compilador.h"
 # include "pilha.h"
+# include "rotulos.h"
 
 # define tabelaSimbolos_t pilha_t *
 
@@ -37,14 +38,14 @@ typedef struct listaParam
 
 struct procedimentoAttr
 {
-  char rotulo[16];
+  rotulo_t rotulo;
   unsigned int numParam;
   listaParam_t *parametros;
 };
 
 struct funcaoAttr
 {
-  char rotulo[16];
+  rotulo_t rotulo;
   int tipoRetorno;
   unsigned int numParam;
   listaParam_t *parametros;
@@ -97,10 +98,10 @@ struct varSimplesAttr varSimples(int tipo, unsigned int desloc);
 struct paramFormalAttr paramFormal(int tipo, unsigned int desloc, char porRef);
 
 // Retorna struct com atributos de procedimento
-struct procedimentoAttr procedimento(char *rotulo, unsigned int numParam, listaParam_t *parametros);
+struct procedimentoAttr procedimento(rotulo_t rotulo, unsigned int numParam, listaParam_t *parametros);
 
 // Retorna struct com atributos de procedimento
-struct funcaoAttr funcao(int tipo, char *rotulo, unsigned int numParam, listaParam_t *parametros);
+struct funcaoAttr funcao(int tipo, rotulo_t rotulo, unsigned int numParam, listaParam_t *parametros);
 
 // Retorna struct com atributos de rótulo
 struct rotuloAttr rotulo(unsigned int linhaCodigo);
