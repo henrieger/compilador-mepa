@@ -40,9 +40,12 @@ char comando[256]; // contem comandos para impressao
 char erro[256]; // contem msgs de erro
 rotulo_t rotuloPre; // "R00"
 rotulo_t rotuloPos; // "R01"
+int qtd_param; // quantidade de parametros na chamada de funcao
 
 // Assinaturas de funções
 void avaliaExpressao(tipoDado_t tipoCertoPre, tipoDado_t tipoCertoPos, tipoDado_t tipoRetorno);
+void comparaExpressaoParametro(pilhaTipos_t pilhaTipos, tabelaSimbolos_t tabelaSimbolos);
+attrsSimbolo_t *buscaProcedimentoOuFuncao(tabelaSimbolos_t tabelaSimbolos, char *nomeProcOuFun);
 
 %}
 
@@ -214,6 +217,31 @@ lista_idents:
     | IDENT
 ;
 
+lista_idents_params_valor: 
+    lista_idents_params_valor VIRGULA IDENT
+    {
+        /* insere último param por valor na tabela de símbolos */
+        attrsSimbolo_t *attrs = inicializaAttrsSimbolo(PARAM_FORMAL, nivel_lexico); 
+        attrs->pfAttr = paramFormal(TIPO_NULO, -1, 0);
+        insereSimbolo(tabelaSimbolos, token, attrs);
+        qtd_param++;
+        # ifdef DEBUG
+        printTabelaSimbolos(tabelaSimbolos);
+        # endif
+    }
+    | IDENT
+    {
+        /* insere param por valor na tabela de símbolos */
+        attrsSimbolo_t *attrs = inicializaAttrsSimbolo(PARAM_FORMAL, nivel_lexico); 
+        attrs->pfAttr = paramFormal(TIPO_NULO, -1, 0);
+        insereSimbolo(tabelaSimbolos, token, attrs);
+        qtd_param++;
+        # ifdef DEBUG
+        printTabelaSimbolos(tabelaSimbolos);
+        # endif
+    }
+;
+
 
 // Regra 11
 
@@ -246,10 +274,12 @@ declara_procedure:
       sprintf(comando, "ENPR %d", nivel_lexico);
       geraCodigo(rotuloPre, comando);
       insereSimbolo(tabelaSimbolos, token, attr);
+      push(pilhaIdents, token, TAM_TOKEN);
     }
     parametros_formais
     PONTO_E_VIRGULA bloco
     {
+      pop(pilhaIdents, NULL, TAM_TOKEN);
       sprintf(comando, "RTPR %d,%d", nivel_lexico, 0);
       geraCodigo(NULL, comando);
       nivel_lexico--;
@@ -265,19 +295,47 @@ declara_funcao:
 
 // Regra 14
 parametros_formais:
-    ABRE_PARENTESES lista_param_formais FECHA_PARENTESES
+    ABRE_PARENTESES {qtd_param = 0;} lista_param_formais
+    {
+      attrsSimbolo_t *attr = buscaProcedimentoOuFuncao(tabelaSimbolos, top(pilhaIdents, TAM_TOKEN));
+      int qtdParamTotal = 0;
+      simbolo_t *s, *topo = top(tabelaSimbolos, sizeof(simbolo_t));
+      for (s = topo; s->attrs != attr; s--)
+        qtdParamTotal++;
+      attr->procAttr.numParam = qtdParamTotal;
+
+      listaParam_t *listaParam = inicializaListaParam(qtdParamTotal);
+      int i = 0;
+      while (++s <= topo)
+      {
+        s->attrs->pfAttr.desloc = -(4+i);
+        listaParam_t p = param(s->attrs->pfAttr.tipo, s->attrs->pfAttr.porRef);
+        listaParam[i] = p;
+        i++;
+      }
+      attr->procAttr.parametros = listaParam;
+      # ifdef DEBUG
+      printTabelaSimbolos(tabelaSimbolos);
+      # endif
+    } FECHA_PARENTESES
     |
 ;
 
 lista_param_formais: 
-    lista_param_formais PONTO_E_VIRGULA secao_param_formais
+    secao_param_formais
+    PONTO_E_VIRGULA lista_param_formais
     | secao_param_formais
 ;
 
 
 // Regra 15
 secao_param_formais:
-    lista_idents DOIS_PONTOS tipo
+    lista_idents_params_valor DOIS_PONTOS tipo 
+    {
+      tipoDado_t tipo = buscaTipoDado(tabelaSimbolos, token);
+      defineTipoUltimasNEntradas(tabelaSimbolos, qtd_param, tipo);
+      qtd_param = 0;
+    }
     | VAR lista_idents DOIS_PONTOS tipo
     | FUNCTION lista_idents DOIS_PONTOS tipo
     | PROCEDURE lista_idents DOIS_PONTOS tipo
@@ -337,9 +395,9 @@ atribuicao:
         sprintf(erro, "Variável %s não definida", variavel);
         yyerror(erro);
       }
-      if (attr->cat != VAR_SIMPLES)
+      if (attr->cat != VAR_SIMPLES && attr->cat != PARAM_FORMAL)
       {
-        sprintf(erro, "Símbolo %s não é variável", variavel);
+        sprintf(erro, "Símbolo %s não é variável nem parâmetro formal", variavel);
         yyerror(erro);
       }
       push(pilhaAttrs, (void *) attr, sizeof(attrsSimbolo_t));
@@ -352,7 +410,10 @@ atribuicao:
       {
         yyerror("Tipo da expressão incompatível com a variável");
       }
-      sprintf(comando, "ARMZ %d,%d", attr->nivel, attr->vsAttr.desloc);
+      if (attr->cat == VAR_SIMPLES)
+        sprintf(comando, "ARMZ %d,%d", attr->nivel, attr->vsAttr.desloc);
+      if (attr->cat == PARAM_FORMAL)
+        sprintf(comando, "ARMZ %d,%d", attr->nivel, attr->pfAttr.desloc);
       geraCodigo(NULL, comando);
     }
 ;
@@ -364,17 +425,7 @@ chamada_procedimento:
     {
       char procedimento[TAM_TOKEN];
       pop(pilhaIdents, procedimento, TAM_TOKEN);
-      attrsSimbolo_t *attr = buscaSimbolo(tabelaSimbolos, procedimento);
-      if (!attr)
-      {
-        sprintf(erro, "Procedimento ou função %s não definido", procedimento);
-        yyerror(erro);
-      }
-      if (attr->cat != PROCEDIMENTO && attr->cat != FUNCAO)
-      {
-        sprintf(erro, "Símbolo %s não é procedimento nem função", procedimento);
-        yyerror(erro);
-      }
+      attrsSimbolo_t *attr = buscaProcedimentoOuFuncao(tabelaSimbolos, procedimento);
       
       sprintf(comando, "CHPR %s,%d", attr->procAttr.rotulo, nivel_lexico);
       geraCodigo(NULL, comando);
@@ -382,7 +433,7 @@ chamada_procedimento:
 ;
 
 opt_lista_expressoes:
-    ABRE_PARENTESES lista_expressoes FECHA_PARENTESES
+    ABRE_PARENTESES {qtd_param = 0;} lista_expressoes FECHA_PARENTESES
     |
 ;
 
@@ -452,8 +503,8 @@ comando_repetitivo:
 
 // Regra 24
 lista_expressoes:
-    lista_expressoes VIRGULA expressao
-    | expressao
+    expressao {comparaExpressaoParametro(pilhaTipos, tabelaSimbolos);} VIRGULA lista_expressoes
+    | expressao {comparaExpressaoParametro(pilhaTipos, tabelaSimbolos);}
 ;
 
 
@@ -521,17 +572,25 @@ fator:
     {
       attrsSimbolo_t attr;
       pop(pilhaAttrs, &attr, sizeof(attrsSimbolo_t));
-      if (attr.cat != VAR_SIMPLES)
+      if (attr.cat != VAR_SIMPLES && attr.cat != PARAM_FORMAL)
       {
-        sprintf(erro, "Símbolo %s não é variável", token);
+        sprintf(erro, "Símbolo %s não é variável nem parametro formal", token);
         yyerror(erro);
       }
-      pushTipo(pilhaTipos, attr.vsAttr.tipo);
+      if (attr.cat == VAR_SIMPLES)
+      {
+        pushTipo(pilhaTipos, attr.vsAttr.tipo);
+        sprintf(comando, "CRVL %d,%d", attr.nivel, attr.vsAttr.desloc);
+      }
+      if (attr.cat == PARAM_FORMAL)
+      {
+        pushTipo(pilhaTipos, attr.pfAttr.tipo);
+        sprintf(comando, "CRVL %d,%d", attr.nivel, attr.pfAttr.desloc);
+      }
       # ifdef DEBUG
       printf("-- PILHA DE TIPOS --\n");
       imprimePilha(pilhaTipos, sizeof(tipoDado_t));
       # endif
-      sprintf(comando, "CRVL %d,%d", attr.nivel, attr.vsAttr.desloc);
       geraCodigo(NULL, comando);
     }
      | NUMERO
@@ -560,9 +619,9 @@ variavel:
         sprintf(erro, "Variável %s não definida", token);
         yyerror(erro);
       }
-      if (attr->cat != VAR_SIMPLES)
+      if (attr->cat != VAR_SIMPLES && attr->cat != PARAM_FORMAL)
       {
-        sprintf(erro, "Símbolo %s não é variável", token);
+        sprintf(erro, "Símbolo %s não é variável nem parametro formal", token);
         yyerror(erro);
       }
       push(pilhaAttrs, (void *) attr, sizeof(attrsSimbolo_t));
@@ -610,6 +669,71 @@ void avaliaExpressao(tipoDado_t tipoCertoPre, tipoDado_t tipoCertoPos, tipoDado_
   printf("-- PILHA DE TIPOS --\n");
   imprimePilha(pilhaTipos, sizeof(tipoDado_t));
   # endif
+}
+
+attrsSimbolo_t *buscaProcedimentoOuFuncao(tabelaSimbolos_t tabelaSimbolos, char *nomeProcOuFun)
+{
+  attrsSimbolo_t *attr = buscaSimbolo(tabelaSimbolos, nomeProcOuFun);
+  if (!attr)
+  {
+    sprintf(erro, "Procedimento ou função %s não encontrado", nomeProcOuFun);
+    yyerror(erro);
+  }
+  if (attr->cat != PROCEDIMENTO && attr->cat != FUNCAO)
+  {
+    sprintf(erro, "Símbolo %s não é procedimento nem função", nomeProcOuFun);
+    yyerror(erro);
+  }
+
+  return attr;
+}
+
+void comparaExpressaoParametro(pilhaTipos_t pilhaTipos, tabelaSimbolos_t tabelaSimbolos)
+{
+  char *procedimento = top(pilhaIdents, TAM_TOKEN);
+
+  attrsSimbolo_t *proc_fun_attr = buscaProcedimentoOuFuncao(tabelaSimbolos, procedimento);
+
+  listaParam_t *parametros;
+  if (proc_fun_attr->cat == PROCEDIMENTO)
+  {
+    if (proc_fun_attr->procAttr.numParam == qtd_param)
+    {
+      sprintf(erro, "Parâmetro inesperado na função %s", procedimento);
+      yyerror(erro);
+    }
+    parametros = proc_fun_attr->procAttr.parametros;
+  }
+  if (proc_fun_attr->cat == FUNCAO)
+  {
+    if (proc_fun_attr->funAttr.numParam == qtd_param)
+    {
+      sprintf(erro, "Parâmetro inesperado na função %s", procedimento);
+      yyerror(erro);
+    }
+    parametros = proc_fun_attr->funAttr.parametros;
+  }
+
+  listaParam_t parametroAtual = parametros[qtd_param];
+
+  if (parametroAtual.porRef)
+  {
+    sprintf(erro, "Parâmetro passado por referência recebeu expressão na função %s", procedimento);
+    yyerror(erro);
+  }
+
+  tipoDado_t tipoParametroReal = topTipo(pilhaTipos);
+  if (parametroAtual.tipo != tipoParametroReal)
+  {
+    sprintf(
+      erro,
+      "Parâmetro de tipo %d recebeu expressão de tipo %d na função %s",
+      parametroAtual.tipo, tipoParametroReal, procedimento
+    );
+    yyerror(erro);
+  }
+
+  qtd_param++;
 }
 
 int main (int argc, char** argv) {

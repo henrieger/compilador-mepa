@@ -1,5 +1,6 @@
 # include "tipoDado.h"
 #include "pilha.h"
+#include "tabelaSimbolos.h"
 
 # include <string.h>
 
@@ -39,7 +40,10 @@ int defineTipoUltimasNEntradas(tabelaSimbolos_t ts, int n, tipoDado_t td)
     simbolo_t *s = top(ts, sizeof(simbolo_t)) - (i*sizeof(simbolo_t));
     if (!s) return 1;
 
-    s->attrs->vsAttr.tipo = td;
+    if (s->attrs->cat == VAR_SIMPLES)
+      s->attrs->vsAttr.tipo = td;
+    else if (s->attrs->cat == PARAM_FORMAL)
+      s->attrs->pfAttr.tipo = td;
   } 
 
   return 0;

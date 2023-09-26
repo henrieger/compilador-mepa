@@ -20,13 +20,13 @@ enum simbCat
 struct varSimplesAttr
 {
   int tipo;
-  unsigned int desloc;
+  int desloc;
 };
 
 struct paramFormalAttr
 {
   int tipo;
-  unsigned int desloc;
+  int desloc;
   char porRef;
 };
 
