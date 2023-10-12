@@ -1,6 +1,6 @@
 # include "tipoDado.h"
-#include "pilha.h"
-#include "tabelaSimbolos.h"
+# include "pilha.h"
+# include "tabelaSimbolos.h"
 
 # include <string.h>
 

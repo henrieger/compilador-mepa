@@ -4,7 +4,7 @@
  #              Autor: Bruno Müller Junior
  #               Data: 08/2007
  #     Modificado por: Henrique Luiz Rieger
- #      Atualizado em: [09/09/2023, 14h:08m]
+ #      Atualizado em: [12/10/2023, 20h:07m]
  #
  # -------------------------------------------------------------------
 
@@ -23,8 +23,8 @@ tabelaSimbolos.o: tabelaSimbolos.c tabelaSimbolos.h
 tipoDado.o: tipoDado.c tipoDado.h
 rotulos.o: rotulos.c rotulos.h
 
-compilador: lex.yy.c compilador.tab.c compilador.o compilador.h pilha.o tabelaSimbolos.o tipoDado.o rotulos.o
-	${CC} ${CFLAGS} lex.yy.c compilador.tab.c compilador.o pilha.o tabelaSimbolos.o tipoDado.o rotulos.o -o compilador -ll -ly -lc
+compilador: lex.yy.c compilador.tab.c compilador.o regras.o compilador.h pilha.o tabelaSimbolos.o tipoDado.o rotulos.o
+	${CC} ${CFLAGS} lex.yy.c compilador.tab.c compilador.o regra*.o pilha.o tabelaSimbolos.o tipoDado.o rotulos.o -o compilador -ll -ly -lc
 
 lex: lex.yy.c compilador.tab.c compilador.o
 	${CC} lex.yy.c -DLEXMAIN compilador.o -o lex -ll
@@ -36,10 +36,13 @@ compilador.tab.c: compilador.y compilador.h
 	bison compilador.y -d -v
 
 compilador.o : compilador.h compiladorF.c
-	${CC} -c compiladorF.c -o compilador.o
+	${CC} ${CFLAGS} -c compiladorF.c -o compilador.o
+
+regras.o: regras.h
+	${CC} ${CFLAGS} -c regras/*.c
 
 debug: CFLAGS += -g -DDEBUG
 debug: all
 
 clean :
-	rm -f compilador.tab.* lex.yy.c compilador.o compilador lex
+	rm -f compilador.tab.* lex.yy.c compilador.o regra*.o compilador lex

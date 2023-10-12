@@ -1,7 +1,7 @@
 # ifndef __TABELA_SIMBOLOS_H__
 # define __TABELA_SIMBOLOS_H__
 
-# include "compilador.h"
+# include "tamanhos.h"
 # include "pilha.h"
 # include "rotulos.h"
 
