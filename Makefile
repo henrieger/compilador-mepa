@@ -4,7 +4,7 @@
  #              Autor: Bruno Müller Junior
  #               Data: 08/2007
  #     Modificado por: Henrique Luiz Rieger
- #      Atualizado em: [12/10/2023, 20h:07m]
+ #      Atualizado em: [18/10/2023, 14h:24m]
  #
  # -------------------------------------------------------------------
 
@@ -45,4 +45,4 @@ debug: CFLAGS += -g -DDEBUG
 debug: all
 
 clean :
-	rm -f compilador.tab.* lex.yy.c compilador.o regra*.o compilador lex
+	rm -f compilador.tab.* lex.yy.c *.o compilador lex testa-pilha testa-tabela-simbolos compilador.output
