@@ -11,7 +11,7 @@ program proc1 (input, output);
       y:=y*z
     end;
   begin
-    (* read(x); *)
-    p
-    (* write (x,y) *)
+    read(x);
+    p;
+    write (x,y)
   end.

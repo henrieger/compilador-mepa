@@ -34,6 +34,7 @@ typedef enum simbolos {
   simb_mais, simb_menos, simb_or,
   simb_vezes, simb_div, simb_and,
   simb_not,
+  simb_read, simb_write,
 } simbolos;
 
 

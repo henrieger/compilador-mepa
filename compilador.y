@@ -16,6 +16,7 @@
 %token VEZES DIV AND
 %token NOT
 %token NUMERO
+%token READ WRITE
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -86,6 +87,10 @@ lista_idents_params_valor:
     lista_idents_params_valor VIRGULA IDENT { insereParamsValorTabSim(); }
     | IDENT { insereParamsValorTabSim(); }
 ;
+
+lista_idents_read:
+    lista_idents_read VIRGULA IDENT { leituraIdents(); }
+    | IDENT { leituraIdents (); }
 
 
 // Regra 11
@@ -170,6 +175,8 @@ comando_sem_rotulo:
     | comando_composto
     | comando_condicional
     | comando_repetitivo
+    | read
+    | write
 ;
 
 comando_com_identificador:
@@ -224,6 +231,11 @@ comando_repetitivo:
 lista_expressoes:
     expressao { comparaExpressaoParametro(); } VIRGULA lista_expressoes
     | expressao { comparaExpressaoParametro(); }
+;
+
+lista_expressoes_write:
+    expressao { geraCodigo(NULL, "IMPR"); } VIRGULA lista_expressoes_write
+    | expressao { geraCodigo(NULL, "IMPR"); }
 ;
 
 
@@ -307,6 +319,18 @@ variavel:
 //     | IDENT 
 //       ABRE_PARENTESES variavel FECHA_PARENTESES
 // ;
+
+
+// "Regra 36" - READ
+read:
+    READ ABRE_PARENTESES lista_idents_read FECHA_PARENTESES
+;
+
+
+// "Regra 37" - WRITE
+write:
+    WRITE ABRE_PARENTESES lista_expressoes_write FECHA_PARENTESES
+
 
 %%
 

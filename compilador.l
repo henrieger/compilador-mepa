@@ -244,6 +244,16 @@ not {
     return NOT;
 }
 
+read {
+    subrotina_token(simb_read, "\tread\t\t");
+    return READ;
+}
+
+write {
+    subrotina_token(simb_write, "\twrite\t\t");
+    return WRITE;
+}
+
 {numero} {
     subrotina_token(simb_numero, "\tnumero\t\t");
     return NUMERO;
