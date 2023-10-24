@@ -8,5 +8,6 @@
 # include "regras/regra20.h"
 # include "regras/regra22.h"
 # include "regras/regra23.h"
+# include "regras/regra24.h"
 # include "regras/regra29.h"
 # include "regras/regra30.h"

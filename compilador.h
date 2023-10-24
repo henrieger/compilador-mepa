@@ -21,6 +21,9 @@
 # include "tipoDado.h"
 # include "rotulos.h"
 
+# define TRUE 1
+# define FALSE 0
+
 typedef enum simbolos {
   simb_program, simb_var, simb_begin, simb_end,
   simb_identificador, simb_numero,
@@ -81,9 +84,6 @@ void yyerror(const char *s);
 
 // Avalia se a expressão pode ser realizada dados os tipos de entrada e empilha o retorno
 void avaliaExpressao(tipoDado_t tipoCertoPre, tipoDado_t tipoCertoPos, tipoDado_t tipoRetorno);
-
-// Compara se o tipo do parâmetro formal corresponde ao tipo do parâmetro real
-void comparaExpressaoParametro();
 
 // Retorina atributos do procedimento ou função a partir do nome
 attrsSimbolo_t *buscaProcedimentoOuFuncao(char *nomeProcOuFun);

@@ -84,8 +84,13 @@ lista_idents:
 ;
 
 lista_idents_params_valor: 
-    lista_idents_params_valor VIRGULA IDENT { insereParamsValorTabSim(); }
-    | IDENT { insereParamsValorTabSim(); }
+    lista_idents_params_valor VIRGULA IDENT { insereParamsTabSim(FALSE); }
+    | IDENT { insereParamsTabSim(FALSE); }
+;
+
+lista_idents_params_ref: 
+    lista_idents_params_ref VIRGULA IDENT { insereParamsTabSim(TRUE); }
+    | IDENT { insereParamsTabSim(TRUE); }
 ;
 
 lista_idents_read:
@@ -141,7 +146,7 @@ lista_param_formais:
 // Regra 15
 secao_param_formais:
     lista_idents_params_valor DOIS_PONTOS tipo { defineTipoParams(); }
-    | VAR lista_idents DOIS_PONTOS tipo { defineTipoParams(); }
+    | VAR lista_idents_params_ref DOIS_PONTOS tipo { defineTipoParams(); }
     // | FUNCTION lista_idents DOIS_PONTOS tipo
     // | PROCEDURE lista_idents DOIS_PONTOS tipo
 ;
@@ -229,7 +234,8 @@ comando_repetitivo:
 
 // Regra 24
 lista_expressoes:
-    expressao { comparaExpressaoParametro(); } VIRGULA lista_expressoes
+    IDENT { comparaIdentParametro(); } VIRGULA lista_expressoes
+    | expressao { comparaExpressaoParametro(); } VIRGULA lista_expressoes
     | expressao { comparaExpressaoParametro(); }
 ;
 
