@@ -22,7 +22,7 @@ void insereListaParam()
   int i = 0;
   while (++s <= topo)
   {
-    s->attrs->pfAttr.desloc = -(4+i);
+    s->attrs->pfAttr.desloc = i - 3 - qtdParamTotal;
     listaParam_t p = param(s->attrs->pfAttr.tipo, s->attrs->pfAttr.porRef);
     listaParam[i] = p;
     i++;
