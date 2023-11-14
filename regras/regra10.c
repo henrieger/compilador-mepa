@@ -32,13 +32,13 @@ void leituraIdents()
   // Armazena valor/indireto dependendo dos atributos
   if (attr->cat == VAR_SIMPLES)
   {
-    printComando(NULL, "ARMZ %d,%d", attr->nivel, attr->vsAttr.desloc);
+    printComando(NULL, "ARMZ %d, %d", attr->nivel, attr->vsAttr.desloc);
   }
   else if (attr->cat == PARAM_FORMAL)
   {
     if (attr->pfAttr.porRef)
-      printComando(NULL, "ARMI %d,%d", attr->nivel, attr->pfAttr.desloc);
+      printComando(NULL, "ARMI %d, %d", attr->nivel, attr->pfAttr.desloc);
     else
-      printComando(NULL, "ARMZ %d,%d", attr->nivel, attr->pfAttr.desloc);
+      printComando(NULL, "ARMZ %d, %d", attr->nivel, attr->pfAttr.desloc);
   }
 }

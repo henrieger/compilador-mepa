@@ -9,5 +9,5 @@ void chamaProcedimento()
   attrsSimbolo_t *attr = buscaProcedimentoOuFuncao(procedimento);
       
   // CHPR
-  printComando(NULL, "CHPR %s,%d", attr->procAttr.rotulo, nivel_lexico);
+  printComando(NULL, "CHPR %s, %d", attr->procAttr.rotulo, nivel_lexico);
 }

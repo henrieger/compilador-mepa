@@ -32,7 +32,7 @@ void retornaProcedure()
 
   // RTPR
   attrsSimbolo_t *attr = buscaProcedimentoOuFuncao(procedimento);
-  printComando(NULL, "RTPR %d,%d", nivel_lexico, attr->procAttr.numParam);
+  printComando(NULL, "RTPR %d, %d", nivel_lexico, attr->procAttr.numParam);
  
   // Decrementa nível léxico
   nivel_lexico--;

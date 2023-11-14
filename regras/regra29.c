@@ -17,9 +17,9 @@ void carregaVariavel()
   {
     pushTipo(pilhaTipos, attr.vsAttr.tipo);
     if (topChar(pilhaContextos))
-      printComando(NULL, "CREN %d,%d", attr.nivel, attr.vsAttr.desloc);
+      printComando(NULL, "CREN %d, %d", attr.nivel, attr.vsAttr.desloc);
     else
-      printComando(NULL, "CRVL %d,%d", attr.nivel, attr.vsAttr.desloc);
+      printComando(NULL, "CRVL %d, %d", attr.nivel, attr.vsAttr.desloc);
   }
   else if (attr.cat == PARAM_FORMAL)
   {
@@ -27,16 +27,16 @@ void carregaVariavel()
     if (topChar(pilhaContextos))
     {
       if (attr.pfAttr.porRef)
-        printComando(NULL, "CRVL %d,%d", attr.nivel, attr.pfAttr.desloc);
+        printComando(NULL, "CRVL %d, %d", attr.nivel, attr.pfAttr.desloc);
       else
-        printComando(NULL, "CREN %d,%d", attr.nivel, attr.pfAttr.desloc);
+        printComando(NULL, "CREN %d, %d", attr.nivel, attr.pfAttr.desloc);
     }
     else
     {
       if (attr.pfAttr.porRef)
-        printComando(NULL, "CRVI %d,%d", attr.nivel, attr.pfAttr.desloc);
+        printComando(NULL, "CRVI %d, %d", attr.nivel, attr.pfAttr.desloc);
       else
-        printComando(NULL, "CRVL %d,%d", attr.nivel, attr.pfAttr.desloc);
+        printComando(NULL, "CRVL %d, %d", attr.nivel, attr.pfAttr.desloc);
     }
   }
 
