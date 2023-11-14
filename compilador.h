@@ -58,6 +58,7 @@ extern pilhaRotulos_t pilhaRotulos;
 extern pilha_t *pilhaAttrs;
 extern pilha_t *pilhaOperacoes;
 extern pilha_t *pilhaIdents;
+extern pilha_t *pilhaContextos;
 
 // Tipos de dados primitivos
 extern tipoDado_t INTEGER;
@@ -76,6 +77,9 @@ extern simbolos simbolo; // simbolo lido pelo analisador lexico
 // Imprime uma linha de código com rótulo
 void geraCodigo (char*, char*);
 
+// Fecha o arquivo MEPA
+void fechaMEPA();
+
 // Invoca o analisador léxico
 int yylex();
 
@@ -93,5 +97,14 @@ void printComando(char *rotulo, const char *format, ...);
 
 // Envelopa yyerror com parâmetros variáveis
 void printErro(const char *format, ...);
+
+// Analisa o próximo parâmetro formal e ativa o contexto de parâmetro equivalente
+void ativaContexto();
+
+// Desativa o contexto de parâmetro atual
+void desativaContexto();
+
+// Checa se expressões compostas são permitidas no contexto atual
+void checaContexto();
 
 # endif

@@ -41,7 +41,7 @@ cabecalho_programa:
 bloco: 
     parte_declara_vars { desviaProcedures(); }
     parte_declara_subrotinas { entraCodigoBloco(); }
-    comando_composto
+    comando_composto { encerraBloco(); }
 ;
 
 
@@ -207,7 +207,7 @@ chamada_procedimento:
 ;
 
 opt_lista_expressoes:
-    ABRE_PARENTESES {qtd_param = 0;} lista_expressoes FECHA_PARENTESES
+    ABRE_PARENTESES { qtd_param = 0; ativaContexto(); } lista_expressoes FECHA_PARENTESES
     |
 ;
 
@@ -234,9 +234,8 @@ comando_repetitivo:
 
 // Regra 24
 lista_expressoes:
-    IDENT { comparaIdentParametro(); } VIRGULA lista_expressoes
-    | expressao { comparaExpressaoParametro(); } VIRGULA lista_expressoes
-    | expressao { comparaExpressaoParametro(); }
+    | expressao { comparaExpressaoParametro(); desativaContexto(); ativaContexto(); } VIRGULA lista_expressoes
+    | expressao { comparaExpressaoParametro(); desativaContexto(); }
 ;
 
 lista_expressoes_write:
@@ -248,7 +247,7 @@ lista_expressoes_write:
 // Regra 25
 expressao: 
     expressao_simples
-    | expressao_simples relacao expressao_simples { avaliaExpressao(TIPO_NULO, TIPO_NULO, BOOLEAN); }
+    | expressao_simples relacao { checaContexto(); } expressao_simples { avaliaExpressao(TIPO_NULO, TIPO_NULO, BOOLEAN); }
 ;
 
 
@@ -266,13 +265,13 @@ relacao:
 // Regra 27
 expressao_simples: 
     lista_termos
-    | MAIS lista_termos
-    | MENOS lista_termos { geraCodigo(NULL, "INVR"); }
+    | MAIS { checaContexto(); } lista_termos
+    | MENOS { checaContexto(); } lista_termos { geraCodigo(NULL, "INVR"); }
 ;
 
 lista_termos:
-    lista_termos operacao_termos_int termo    { avaliaExpressao(INTEGER, INTEGER, INTEGER); } 
-    | lista_termos operacao_termos_bool termo { avaliaExpressao(BOOLEAN, BOOLEAN, BOOLEAN); } 
+    lista_termos operacao_termos_int { checaContexto(); } termo    { avaliaExpressao(INTEGER, INTEGER, INTEGER); } 
+    | lista_termos operacao_termos_bool { checaContexto(); } termo { avaliaExpressao(BOOLEAN, BOOLEAN, BOOLEAN); } 
     | termo
 ;
 
@@ -288,8 +287,8 @@ operacao_termos_bool:
 
 // Regra 28
 termo: 
-    termo operacao_fatores_bool fator   { avaliaExpressao(BOOLEAN, BOOLEAN, BOOLEAN); } 
-    | termo operacao_fatores_int fator  { avaliaExpressao(INTEGER, INTEGER, INTEGER); } 
+    termo operacao_fatores_bool { checaContexto(); } fator   { avaliaExpressao(BOOLEAN, BOOLEAN, BOOLEAN); } 
+    | termo operacao_fatores_int { checaContexto(); } fator  { avaliaExpressao(INTEGER, INTEGER, INTEGER); } 
     | fator
 ;
 
@@ -306,10 +305,10 @@ operacao_fatores_bool:
 // Regra 29
 fator: 
     variavel { carregaVariavel(); }
-    | NUMERO { carregaConstante(); }
+    | NUMERO { checaContexto(); carregaConstante(); }
      // | chamada_funcao
-    | ABRE_PARENTESES expressao FECHA_PARENTESES
-    | NOT fator
+    | ABRE_PARENTESES { checaContexto(); } expressao FECHA_PARENTESES
+    | NOT { checaContexto(); } fator
 ;
 
 
@@ -379,6 +378,10 @@ int main (int argc, char** argv)
   pilhaOperacoes = inicializaPilha();
   pilhaRotulos = inicializaPilha();
   pilhaIdents = inicializaPilha();
+  pilhaContextos = inicializaPilha();
+
+  // Inicializa contexto de parâmetro
+  pushChar(pilhaContextos, 0);
 
   // Parsing do codigo
   yyin=fp;
@@ -391,6 +394,11 @@ int main (int argc, char** argv)
   destroiPilha(pilhaAttrs);
   destroiPilha(pilhaOperacoes);
   destroiPilha(pilhaRotulos);
+  destroiPilha(pilhaIdents);
+  destroiPilha(pilhaContextos);
+
+  fclose(fp);
+  fechaMEPA();
 
   return 0;
 }

@@ -35,6 +35,7 @@ pilhaRotulos_t pilhaRotulos;
 pilha_t *pilhaAttrs;
 pilha_t *pilhaOperacoes;
 pilha_t *pilhaIdents;
+pilha_t *pilhaContextos;
 
 // Tipos de dados primitivos
 tipoDado_t INTEGER;
@@ -62,6 +63,11 @@ void geraCodigo (char* rot, char* comando)
   }
 }
 
+
+void fechaMEPA()
+{
+  if (fp) fclose(fp);
+}
 
 int imprimeErro (const char* erro)
 {
@@ -138,4 +144,49 @@ void printErro(const char *format, ...)
   va_end(args);
 
   yyerror(erro);
+}
+
+
+void ativaContexto()
+{
+
+  char *procedimento = top(pilhaIdents, TAM_TOKEN);
+
+  attrsSimbolo_t *proc_fun_attr = buscaProcedimentoOuFuncao(procedimento);
+
+  listaParam_t *parametros;
+  if (proc_fun_attr->cat == PROCEDIMENTO)
+  {
+    if (proc_fun_attr->procAttr.numParam == qtd_param)
+      printErro("Parâmetro inesperado no procedimento %s", procedimento);
+
+    parametros = proc_fun_attr->procAttr.parametros;
+  }
+  else if (proc_fun_attr->cat == FUNCAO)
+  {
+    if (proc_fun_attr->funAttr.numParam == qtd_param)
+      printErro("Parâmetro inesperado na função %s", procedimento);
+
+    parametros = proc_fun_attr->funAttr.parametros;
+  }
+
+  listaParam_t parametroAtual = parametros[qtd_param];
+
+  if (parametroAtual.porRef)
+    pushChar(pilhaContextos, 1);
+  else
+    pushChar(pilhaContextos, 0);
+}
+
+
+void desativaContexto()
+{
+  popChar(pilhaContextos);
+}
+
+
+void checaContexto()
+{
+  if (topChar(pilhaContextos))
+    printErro("Expressão composta não pode ser passada por referência");
 }

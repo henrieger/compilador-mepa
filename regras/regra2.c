@@ -2,6 +2,7 @@
 # include "../compilador.h"
 
 # include <stdio.h>
+# include <string.h>
 
 
 void desviaProcedures()
@@ -39,6 +40,10 @@ void encerraBloco()
   // Itera por todos os símbolos do nível léxico atual na tabela
   while (simbolosDoNivelLexico(ultimoSimbolo, tabelaSimbolos))
   {
+    char *ident = top(pilhaIdents, TAM_TOKEN);
+    if (ident && !strncmp(ultimoSimbolo->ident, ident, TAM_TOKEN))
+      break;
+
     simbolos_qtd++;
 
     // Se o símbolo for uma variável simples, aumenta a quantidade para o DMEM
@@ -49,9 +54,10 @@ void encerraBloco()
   }
 
   // Retira todos os símbolos do nível léxico encontrados na tabela, exceto a própria proc/fun
-  retiraSimbolos(tabelaSimbolos, simbolos_qtd-1);
+  retiraSimbolos(tabelaSimbolos, simbolos_qtd);
   
   # ifdef DEBUG
+  printTabelaSimbolos(tabelaSimbolos);
   printf("DMEM_QTD: %d, SIMBOLOS_QTD: %d\n", dmem_qtd, simbolos_qtd);
   # endif
   

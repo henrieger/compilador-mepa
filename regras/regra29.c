@@ -16,15 +16,28 @@ void carregaVariavel()
   if (attr.cat == VAR_SIMPLES)
   {
     pushTipo(pilhaTipos, attr.vsAttr.tipo);
-    printComando(NULL, "CRVL %d,%d", attr.nivel, attr.vsAttr.desloc);
+    if (topChar(pilhaContextos))
+      printComando(NULL, "CREN %d,%d", attr.nivel, attr.vsAttr.desloc);
+    else
+      printComando(NULL, "CRVL %d,%d", attr.nivel, attr.vsAttr.desloc);
   }
   else if (attr.cat == PARAM_FORMAL)
   {
     pushTipo(pilhaTipos, attr.pfAttr.tipo);
-    if (attr.pfAttr.porRef)
-      printComando(NULL, "CRVI %d,%d", attr.nivel, attr.pfAttr.desloc);
+    if (topChar(pilhaContextos))
+    {
+      if (attr.pfAttr.porRef)
+        printComando(NULL, "CRVL %d,%d", attr.nivel, attr.pfAttr.desloc);
+      else
+        printComando(NULL, "CREN %d,%d", attr.nivel, attr.pfAttr.desloc);
+    }
     else
-      printComando(NULL, "CRVL %d,%d", attr.nivel, attr.pfAttr.desloc);
+    {
+      if (attr.pfAttr.porRef)
+        printComando(NULL, "CRVI %d,%d", attr.nivel, attr.pfAttr.desloc);
+      else
+        printComando(NULL, "CRVL %d,%d", attr.nivel, attr.pfAttr.desloc);
+    }
   }
 
   # ifdef DEBUG

@@ -26,9 +26,6 @@ void comparaExpressaoParametro()
 
   listaParam_t parametroAtual = parametros[qtd_param];
 
-  if (parametroAtual.porRef)
-    printErro("Parâmetro passado por referência recebeu expressão na função %s", procedimento);
-
   tipoDado_t tipoParametroReal = topTipo(pilhaTipos);
   if (parametroAtual.tipo != tipoParametroReal)
     printErro(
