@@ -27,10 +27,12 @@ void entraProcedure()
 void retornaProcedure()
 {
   // Retira nome do procedimento da pilha de identificadores
-  pop(pilhaIdents, NULL, TAM_TOKEN);
+  char *procedimento;
+  pop(pilhaIdents, procedimento, TAM_TOKEN);
 
   // RTPR
-  printComando(NULL, "RTPR %d,%d", nivel_lexico, 0);
+  attrsSimbolo_t *attr = buscaProcedimentoOuFuncao(procedimento);
+  printComando(NULL, "RTPR %d,%d", nivel_lexico, attr->procAttr.numParam);
  
   // Decrementa nível léxico
   nivel_lexico--;
