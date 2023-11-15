@@ -25,7 +25,7 @@
 //#define IMPRIME(STR) {};
 #define IMPRIME(STR) printf("%s    # %s \n", STR, token);
 
-void subrotina_token(simbolos simb, const char *impressao);
+void subrotina_token(const char *impressao);
 
 int nl = 1;
 
@@ -50,226 +50,225 @@ comentario "(*".*"*)"
 {comentario}
 
 program {
-    subrotina_token(simb_program, "program\t\t\t");
+    subrotina_token("program\t\t\t");
     return PROGRAM;
 }
 
 label {
-    subrotina_token(simb_label, "label\t\t\t");
+    subrotina_token("label\t\t\t");
     return LABEL;
 }
 
 type {
-    subrotina_token(simb_type, "type\t\t\t");
+    subrotina_token("type\t\t\t");
     return TYPE;
 }
 
 array {
-    subrotina_token(simb_array, "array\t\t\t");
+    subrotina_token("array\t\t\t");
     return ARRAY;
 }
 
 "\[" {
-    subrotina_token(simb_abre_colchetes, "\tabre_colchetes\t");
+    subrotina_token("\tabre_colchetes\t");
     return ABRE_COLCHETES;
 }
 
 "\]" {
-    subrotina_token(simb_fecha_colchetes, "\tfecha_colchetes");
+    subrotina_token("\tfecha_colchetes");
     return FECHA_COLCHETES;
 }
 
 of {
-    subrotina_token(simb_of, "\tof\t\t");
+    subrotina_token("\tof\t\t");
     return OF;
 }
 
 \.\. {
-    subrotina_token(simb_ponto_ponto, "\tponto_ponto\t");
+    subrotina_token("\tponto_ponto\t");
     return PONTO_PONTO;
 }
 
 var {
-    subrotina_token(simb_var, "var\t\t\t");
+    subrotina_token("var\t\t\t");
     return VAR;
 }
 
 procedure {
-    subrotina_token(simb_procedure, "procedure\t\t");
+    subrotina_token("procedure\t\t");
     return PROCEDURE;
 }
 
 function {
-    subrotina_token(simb_function, "function\t\t");
+    subrotina_token("function\t\t");
     return FUNCTION;
 }
 
 begin {
-    subrotina_token(simb_begin, "begin\t\t\t");
+    subrotina_token("begin\t\t\t");
     return T_BEGIN;
 }
 
 end {
-    subrotina_token(simb_end, "end\t\t\t");
+    subrotina_token("end\t\t\t");
     return T_END;
 }
 
 := {
-    subrotina_token(simb_atribuicao, "\tatribuicao\t");
+    subrotina_token("\tatribuicao\t");
     return ATRIBUICAO;
 }
 
 \; {
-    subrotina_token(simb_ponto_e_virgula, "\tpt_virgula\t");
+    subrotina_token("\tpt_virgula\t");
     return PONTO_E_VIRGULA;
 }
 
 \: {
-    subrotina_token(simb_dois_pontos, "\tdois_pontos\t");
+    subrotina_token("\tdois_pontos\t");
     return DOIS_PONTOS;
 }
 
 \, {
-    subrotina_token(simb_virgula, "\tvirgula\t\t");
+    subrotina_token("\tvirgula\t\t");
     return VIRGULA;
 }
 
 \. {
-    subrotina_token(simb_ponto, "\tponto\t\t");
+    subrotina_token("\tponto\t\t");
     return PONTO;
 }
 
 \( {
-    subrotina_token(simb_abre_parenteses, "\tabre_parenteses\t");
+    subrotina_token("\tabre_parenteses\t");
     return ABRE_PARENTESES;
 }
 
 \) {
-    subrotina_token(simb_fecha_parenteses, "\tfecha_parenteses");
+    subrotina_token("\tfecha_parenteses");
     return FECHA_PARENTESES;
 }
 
 goto {
-    subrotina_token(simb_goto, "goto\t\t\t");
+    subrotina_token("goto\t\t\t");
     return GOTO;
 }
 
 if {
-    subrotina_token(simb_if, "if\t\t\t");
+    subrotina_token("if\t\t\t");
     return IF;
 }
 
 then {
-    subrotina_token(simb_then, "then\t\t\t");
+    subrotina_token("then\t\t\t");
     return THEN;
 }
 
 else {
-    subrotina_token(simb_else, "else\t\t\t");
+    subrotina_token("else\t\t\t");
     return ELSE;
 }
 
 while {
-    subrotina_token(simb_while, "while\t\t\t");
+    subrotina_token("while\t\t\t");
     return WHILE;
 }
 
 do {
-    subrotina_token(simb_do, "do\t\t\t");
+    subrotina_token("do\t\t\t");
     return DO;
 }
 
 \= {
-    subrotina_token(simb_igual, "\tigual\t\t");
+    subrotina_token("\tigual\t\t");
     return IGUAL;
 }
 
 \<> {
-    subrotina_token(simb_dif, "\tdif\t\t");
+    subrotina_token("\tdif\t\t");
     return DIF;
 }
 
 \< {
-    subrotina_token(simb_maior, "\tmenor\t\t");
+    subrotina_token("\tmenor\t\t");
     return MENOR;
 }
 
 \<\= {
-    subrotina_token(simb_maior_igual, "\tmenor_igual\t");
+    subrotina_token("\tmenor_igual\t");
     return MENOR_IGUAL;
 }
 
 \>\= {
-    subrotina_token(simb_menor_igual, "\tmaior_igual\t");
+    subrotina_token("\tmaior_igual\t");
     return MAIOR_IGUAL;
 }
 
 \> {
-    subrotina_token(simb_menor, "\tmaior\t\t");
+    subrotina_token("\tmaior\t\t");
     return MAIOR;
 }
 
 \+ {
-    subrotina_token(simb_mais, "\tmais\t\t");
+    subrotina_token("\tmais\t\t");
     return MAIS;
 }
 
 \- {
-    subrotina_token(simb_menos, "\tmenos\t\t");
+    subrotina_token("\tmenos\t\t");
     return MENOS;
 }
 
 or {
-    subrotina_token(simb_or, "\tor\t\t");
+    subrotina_token("\tor\t\t");
     return OR;
 }
 
 \* {
-    subrotina_token(simb_vezes, "\tvezes\t\t");
+    subrotina_token("\tvezes\t\t");
     return VEZES;
 }
 
 div {
-    subrotina_token(simb_div, "\tdiv\t\t");
+    subrotina_token("\tdiv\t\t");
     return DIV;
 }
 
 and {
-    subrotina_token(simb_and, "\tand\t\t");
+    subrotina_token("\tand\t\t");
     return AND;
 }
 
 not {
-    subrotina_token(simb_not, "\tnot\t\t");
+    subrotina_token("\tnot\t\t");
     return NOT;
 }
 
 read {
-    subrotina_token(simb_read, "\tread\t\t");
+    subrotina_token("\tread\t\t");
     return READ;
 }
 
 write {
-    subrotina_token(simb_write, "\twrite\t\t");
+    subrotina_token("\twrite\t\t");
     return WRITE;
 }
 
 {numero} {
-    subrotina_token(simb_numero, "\tnumero\t\t");
+    subrotina_token("\tnumero\t\t");
     return NUMERO;
 }
 
 {ident} {
-    subrotina_token(simb_identificador, "\tident\t\t");
+    subrotina_token("\tident\t\t");
     return IDENT;
 }
 
 
 %%
 
-void subrotina_token(simbolos simb, const char *impressao)
+void subrotina_token(const char *impressao)
 {
-  simbolo = simb;
   strncpy(token, yytext, TAM_TOKEN);
   IMPRIME(impressao);
 }

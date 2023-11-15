@@ -45,7 +45,6 @@ tipoDado_t BOOLEAN;
 // Variáveis auxiliares
 char token[TAM_TOKEN];
 int qtd_param;
-simbolos simbolo;
 
 FILE* fp=NULL;
 

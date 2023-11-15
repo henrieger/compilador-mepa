@@ -24,22 +24,6 @@
 # define TRUE 1
 # define FALSE 0
 
-typedef enum simbolos {
-  simb_program, simb_var, simb_begin, simb_end,
-  simb_identificador, simb_numero,
-  simb_ponto, simb_virgula, simb_ponto_e_virgula, simb_dois_pontos,
-  simb_atribuicao, simb_abre_parenteses, simb_fecha_parenteses,
-  simb_label, simb_type, simb_array, simb_procedure, simb_function,
-  simb_abre_colchetes, simb_fecha_colchetes, simb_of, simb_ponto_ponto,
-  simb_goto, simb_if, simb_then, simb_else,
-  simb_while, simb_do,
-  simb_igual, simb_dif, simb_maior, simb_maior_igual, simb_menor, simb_menor_igual,
-  simb_mais, simb_menos, simb_or,
-  simb_vezes, simb_div, simb_and,
-  simb_not,
-  simb_read, simb_write,
-} simbolos;
-
 
 /* -------------------------------------------------------------------
  * variáveis globais
@@ -68,7 +52,6 @@ extern tipoDado_t BOOLEAN;
 // Variáveis auxiliares
 extern char token[TAM_TOKEN]; // token atual
 extern int qtd_param; // quantidade de parametros na chamada de funcao
-extern simbolos simbolo; // simbolo lido pelo analisador lexico
 
 /* -------------------------------------------------------------------
  * prototipos globais
