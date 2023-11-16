@@ -68,10 +68,11 @@ struct procedimentoAttr procedimento(rotulo_t rotulo, unsigned int numParam, lis
 }
 
 // Retorna struct com atributos de procedimento
-struct funcaoAttr funcao(int tipo, rotulo_t rotulo, unsigned int numParam, listaParam_t *parametros)
+struct funcaoAttr funcao(int tipo, int desloc, rotulo_t rotulo, unsigned int numParam, listaParam_t *parametros)
 {
   struct funcaoAttr f;
   f.tipoRetorno = tipo;
+  f.desloc = desloc;
   memcpy(f.rotulo, rotulo, TAM_TOKEN);
   f.numParam = numParam;
   f.parametros = parametros;
@@ -174,7 +175,7 @@ void printSimbolo(char *ident, attrsSimbolo_t* as)
       printf("\t}\n");
       break;
     case FUNCAO:
-      printf("\tTipo do retorno: %d\n\tRótulo: %s\n\tNúmero de parâmetros: %d\n\tParâmetros:\n\t{\n", as->funAttr.tipoRetorno, as->funAttr.rotulo, as->funAttr.numParam);
+      printf("\tDeslocamento: %d\n\tTipo do retorno: %d\n\tRótulo: %s\n\tNúmero de parâmetros: %d\n\tParâmetros:\n\t{\n", as->funAttr.desloc, as->funAttr.tipoRetorno, as->funAttr.rotulo, as->funAttr.numParam);
       for (int i = 0; i < as->funAttr.numParam; i++)
         printf("\t\tTipo: %d\n\t\tPor referência: %d\n", as->funAttr.parametros[i].tipo, as->funAttr.parametros[i].porRef);
       printf("\t}\n");

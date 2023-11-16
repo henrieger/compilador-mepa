@@ -47,6 +47,7 @@ struct funcaoAttr
 {
   rotulo_t rotulo;
   int tipoRetorno;
+  int desloc;
   unsigned int numParam;
   listaParam_t *parametros;
 };
@@ -101,7 +102,7 @@ struct paramFormalAttr paramFormal(int tipo, unsigned int desloc, char porRef);
 struct procedimentoAttr procedimento(rotulo_t rotulo, unsigned int numParam, listaParam_t *parametros);
 
 // Retorna struct com atributos de procedimento
-struct funcaoAttr funcao(int tipo, rotulo_t rotulo, unsigned int numParam, listaParam_t *parametros);
+struct funcaoAttr funcao(int tipo,int desloc, rotulo_t rotulo, unsigned int numParam, listaParam_t *parametros);
 
 // Retorna struct com atributos de rótulo
 struct rotuloAttr rotulo(unsigned int linhaCodigo);

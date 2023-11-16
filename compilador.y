@@ -125,8 +125,9 @@ declara_procedure:
 
 // Regra 13
 declara_funcao:
-    FUNCTION IDENT parametros_formais DOIS_PONTOS tipo PONTO_E_VIRGULA
+    FUNCTION IDENT { entraFuncao(); } parametros_formais DOIS_PONTOS tipo { ajustaFuncao(); } PONTO_E_VIRGULA
     bloco
+    { retornaFuncao(); }
 ;
 
 
@@ -304,17 +305,14 @@ operacao_fatores_bool:
 
 // Regra 29
 fator: 
-    variavel { carregaVariavel(); }
+    fator_com_identificador
     | NUMERO { checaContexto(); carregaConstante(); }
-     // | chamada_funcao
     | ABRE_PARENTESES { checaContexto(); } expressao FECHA_PARENTESES
     | NOT { checaContexto(); } fator
 ;
 
-
-// Regra 30
-variavel: 
-    IDENT { empilhaAtributosVar(); }
+fator_com_identificador: 
+    IDENT { empilhaAtributosVar(); carregaVariavel(); }
 ;
 
 

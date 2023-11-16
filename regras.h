@@ -2,6 +2,7 @@
 # include "regras/regra9.h"
 # include "regras/regra10.h"
 # include "regras/regra12.h"
+# include "regras/regra13.h"
 # include "regras/regra14.h"
 # include "regras/regra15.h"
 # include "regras/regra19.h"
