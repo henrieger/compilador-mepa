@@ -96,6 +96,7 @@ lista_idents_params_ref:
 lista_idents_read:
     lista_idents_read VIRGULA IDENT { leituraIdents(); }
     | IDENT { leituraIdents (); }
+;
 
 
 // Regra 11
@@ -204,11 +205,11 @@ atribuicao:
 
 // Regra 20
 chamada_procedimento:
-    opt_lista_expressoes { chamaProcedimento(); }
+    opt_lista_expressoes_proc { chamaProcedimento(); }
 ;
 
-opt_lista_expressoes:
-    ABRE_PARENTESES { qtd_param = 0; ativaContexto(); } lista_expressoes FECHA_PARENTESES
+opt_lista_expressoes_proc:
+    { qtd_param = 0; ativaContexto(); } ABRE_PARENTESES lista_expressoes FECHA_PARENTESES
     |
 ;
 
@@ -312,7 +313,7 @@ fator:
 ;
 
 fator_com_identificador: 
-    IDENT { empilhaAtributosVar(); carregaVariavel(); }
+    IDENT { carregaVariavel(); }
 ;
 
 
@@ -372,7 +373,6 @@ int main (int argc, char** argv)
 
   // Inicializa pilhas extras
   pilhaTipos = inicializaPilha();
-  pilhaAttrs = inicializaPilha();
   pilhaOperacoes = inicializaPilha();
   pilhaRotulos = inicializaPilha();
   pilhaIdents = inicializaPilha();
@@ -389,7 +389,6 @@ int main (int argc, char** argv)
   retiraSimbolos(tabelaSimbolos, 3);
   destroiPilha(tabelaSimbolos);
   destroiPilha(pilhaTipos);
-  destroiPilha(pilhaAttrs);
   destroiPilha(pilhaOperacoes);
   destroiPilha(pilhaRotulos);
   destroiPilha(pilhaIdents);

@@ -32,7 +32,6 @@ int desloc = 0;
 tabelaSimbolos_t tabelaSimbolos;
 pilhaTipos_t pilhaTipos;
 pilhaRotulos_t pilhaRotulos;
-pilha_t *pilhaAttrs;
 pilha_t *pilhaOperacoes;
 pilha_t *pilhaIdents;
 pilha_t *pilhaContextos;

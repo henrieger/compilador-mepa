@@ -11,4 +11,3 @@
 # include "regras/regra23.h"
 # include "regras/regra24.h"
 # include "regras/regra29.h"
-# include "regras/regra30.h"

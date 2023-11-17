@@ -18,9 +18,6 @@ void atribuicao()
   if (attr->cat != VAR_SIMPLES && attr->cat != PARAM_FORMAL && attr->cat != FUNCAO)
     printErro("Símbolo %s não é atribuível", simbolo);
 
-  // Coloca símbolo na pilha de atributos
-  push(pilhaAttrs, (void *) attr, sizeof(attrsSimbolo_t));
-
   // Recupera e compara tipo da expressão
   tipoDado_t tipoExpressao = popTipo(pilhaTipos);
   tipoDado_t tipoSimbolo;

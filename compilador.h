@@ -39,7 +39,6 @@ extern int nl;
 extern tabelaSimbolos_t tabelaSimbolos;
 extern pilhaTipos_t pilhaTipos;
 extern pilhaRotulos_t pilhaRotulos;
-extern pilha_t *pilhaAttrs;
 extern pilha_t *pilhaOperacoes;
 extern pilha_t *pilhaIdents;
 extern pilha_t *pilhaContextos;

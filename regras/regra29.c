@@ -6,37 +6,38 @@
 
 void carregaVariavel()
 {
-  // Recupera atributos da variável
-  attrsSimbolo_t attr;
-  pop(pilhaAttrs, &attr, sizeof(attrsSimbolo_t));
-  if (attr.cat != VAR_SIMPLES && attr.cat != PARAM_FORMAL)
+  attrsSimbolo_t *attr = buscaSimbolo(tabelaSimbolos, token);
+  if (!attr)
+    printErro("Variável %s não definida", token);
+
+  if (attr->cat != VAR_SIMPLES && attr->cat != PARAM_FORMAL)
     printErro("Símbolo %s não é variável nem parametro formal", token);
 
   // Coloca tipo na pilha e carrega valor/indireto
-  if (attr.cat == VAR_SIMPLES)
+  if (attr->cat == VAR_SIMPLES)
   {
-    pushTipo(pilhaTipos, attr.vsAttr.tipo);
+    pushTipo(pilhaTipos, attr->vsAttr.tipo);
     if (topChar(pilhaContextos))
-      printComando(NULL, "CREN %d, %d", attr.nivel, attr.vsAttr.desloc);
+      printComando(NULL, "CREN %d, %d", attr->nivel, attr->vsAttr.desloc);
     else
-      printComando(NULL, "CRVL %d, %d", attr.nivel, attr.vsAttr.desloc);
+      printComando(NULL, "CRVL %d, %d", attr->nivel, attr->vsAttr.desloc);
   }
-  else if (attr.cat == PARAM_FORMAL)
+  else if (attr->cat == PARAM_FORMAL)
   {
-    pushTipo(pilhaTipos, attr.pfAttr.tipo);
+    pushTipo(pilhaTipos, attr->pfAttr.tipo);
     if (topChar(pilhaContextos))
     {
-      if (attr.pfAttr.porRef)
-        printComando(NULL, "CRVL %d, %d", attr.nivel, attr.pfAttr.desloc);
+      if (attr->pfAttr.porRef)
+        printComando(NULL, "CRVL %d, %d", attr->nivel, attr->pfAttr.desloc);
       else
-        printComando(NULL, "CREN %d, %d", attr.nivel, attr.pfAttr.desloc);
+        printComando(NULL, "CREN %d, %d", attr->nivel, attr->pfAttr.desloc);
     }
     else
     {
-      if (attr.pfAttr.porRef)
-        printComando(NULL, "CRVI %d, %d", attr.nivel, attr.pfAttr.desloc);
+      if (attr->pfAttr.porRef)
+        printComando(NULL, "CRVI %d, %d", attr->nivel, attr->pfAttr.desloc);
       else
-        printComando(NULL, "CRVL %d, %d", attr.nivel, attr.pfAttr.desloc);
+        printComando(NULL, "CRVL %d, %d", attr->nivel, attr->pfAttr.desloc);
     }
   }
 
