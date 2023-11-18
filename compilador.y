@@ -205,7 +205,7 @@ atribuicao:
 
 // Regra 20
 chamada_procedimento:
-    opt_lista_expressoes_proc { chamaProcedimento(); }
+    { checaProcedimentoOuFuncao(); } opt_lista_expressoes_proc { chamaProcedimento(); }
 ;
 
 opt_lista_expressoes_proc:
@@ -313,16 +313,13 @@ fator:
 ;
 
 fator_com_identificador: 
-    IDENT { carregaVariavel(); }
+    IDENT { carregaVariavel(); } opt_lista_expressoes_func
 ;
 
-
-// Regra 31
-// chamada_funcao:
-//     IDENT
-//     | IDENT 
-//       ABRE_PARENTESES variavel FECHA_PARENTESES
-// ;
+opt_lista_expressoes_func:
+    { qtd_param = 0; ativaContexto(); } ABRE_PARENTESES lista_expressoes FECHA_PARENTESES { chamaFuncao(); }
+    |
+;
 
 
 // "Regra 36" - READ
