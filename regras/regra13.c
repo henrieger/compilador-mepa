@@ -39,7 +39,7 @@ void ajustaFuncao()
 void retornaFuncao()
 {
   // Retira nome da função da pilha de identificadores
-  char *funcao;
+  char funcao[TAM_TOKEN];
   pop(pilhaIdents, funcao, TAM_TOKEN);
 
   // RTPR

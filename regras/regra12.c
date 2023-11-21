@@ -27,7 +27,7 @@ void entraProcedure()
 void retornaProcedure()
 {
   // Retira nome do procedimento da pilha de identificadores
-  char *procedimento;
+  char procedimento[TAM_TOKEN];
   pop(pilhaIdents, procedimento, TAM_TOKEN);
 
   // RTPR

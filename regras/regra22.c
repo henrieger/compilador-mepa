@@ -4,6 +4,10 @@
 
 void entraIf()
 {
+  tipoDado_t tipoExpressao = topTipo(pilhaTipos);
+  if (tipoExpressao != BOOLEAN)
+      printErro("Tipo da expressão de comando condicional deve ser booleano");
+
   rotulo_t rotuloPre, rotuloPos;
 
   proximoRotulo(rotuloPre);
